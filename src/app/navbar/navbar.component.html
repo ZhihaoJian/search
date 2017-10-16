@@ -1,0 +1,31 @@
+<!--导航 start-->
+<nav>
+  <div class="ui menu fixed pointing " id="navbar">
+    <div class="ui container">
+      <a href="#" class="header item">
+        <img src="../../assets/img/2.ico" class="image" alt="" srcset="">
+        <span id="logo-name"> 澄海区档案局电子文档数据中心</span>
+      </a>
+      <div #linkContainer>
+        <a [routerLink]="['/openFile']" data-index='0' class="item" [ngClass]="{active:openFile.dataset['index']===linkIndex }" (click)="onChangeForcus(openFile.dataset['index'])"
+          #openFile>
+          开放档案服务
+        </a>
+        <a [routerLink]="['/currentFile']" data-index='1' class="item" [ngClass]="{active:currentFile.dataset['index']===linkIndex}"
+          (click)="onChangeForcus(currentFile.dataset['index'])" #currentFile>
+          现行文件服务
+        </a>
+        <a [routerLink]="['/archivecompilationservice']" data-index='2' [ngClass]="{active:archiveService.dataset['index']===linkIndex }"
+          class="item" (click)="onChangeForcus(archiveService.dataset['index'])" #archiveService>
+          编研服务
+        </a>
+        <a class="item" id="ratingBtn" #ratingBtn data-index='3' [ngClass]="{active:onlineComment.dataset['index']===linkIndex }"
+          (click)="onShowRatingModal($event.target.dataset['index'])" (click)="onChangeForcus(onlineComment.dataset['index'])"
+          #onlineComment>
+          在线评价
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+<!--导航 end-->

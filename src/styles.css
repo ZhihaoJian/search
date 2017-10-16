@@ -1,1 +1,17 @@
 /* You can add global styles to this file, and also import other style files */
+
+section {
+    padding-top: 100px;
+}
+
+body {
+    background: #f4f4f4 !important;
+}
+
+.color-red {
+    color: red !important;
+}
+
+.color-white {
+    color: #fff !important;
+}

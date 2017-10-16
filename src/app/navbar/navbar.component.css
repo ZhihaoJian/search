@@ -1,0 +1,21 @@
+/* 导航条样式 */
+
+#navbar {
+    background: #1681d3;
+}
+
+#logo-name {
+    font-size: 1.2rem;
+    margin-left: 5px;
+    color: #fff;
+}
+
+#navbar>div.container a {
+    color: #fff;
+}
+
+#navbar>div.container>div {
+    display: flex;
+    flex-direction: row;
+    margin-left: auto;
+}

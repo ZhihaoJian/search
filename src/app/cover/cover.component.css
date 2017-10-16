@@ -1,0 +1,9 @@
+div.segment {
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    width: 100vw;
+    height: 100vh;
+    margin: 0 !important;
+    padding: 0 !important;
+}
