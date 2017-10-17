@@ -18,5 +18,4 @@ export class AppComponent implements OnInit {
   getDataFromServer() {
     this.service.initLoading();
   }
-
 }

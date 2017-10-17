@@ -7,7 +7,7 @@ declare var $: any;
 export class CurrentFileServiceService {
 
   private auth: AUTH;
-  IP = 'http://192.168.88.89:8080';
+  IP = 'http://localhost:7070';
 
   constructor(private http: HttpClient) {
   }
@@ -24,16 +24,28 @@ export class CurrentFileServiceService {
     }
   }
 
+  // 初始化加载
   initLoading() {
     const url = this.IP + '/app/appController/getCatalogueTree';
     this.http.post(url, null)
       .subscribe(data => {
         console.log(data);
-        const loading = document.getElementById('segment');
-        loading.style.display = 'none';
-
-        $('html,body').css('overflow-y', 'auto')
+        this.disableLoading();
       })
+  }
+
+  // 启用遮罩
+  enableLoading() {
+    const loading = document.getElementById('segment');
+    loading.style.display = 'block';
+    $('html,body').css('overflow-y', 'hidden')
+  }
+
+  // 禁用遮罩
+  disableLoading() {
+    const loading = document.getElementById('segment');
+    loading.style.display = 'none';
+    $('html,body').css('overflow-y', 'auto')
   }
 }
 
