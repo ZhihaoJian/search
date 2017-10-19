@@ -3,10 +3,10 @@
     <div class="ui container" id="content-container">
         <div id="openFileService">
             <!--表单 start-->
-            <app-form></app-form>
+            <app-form [selection]="selection"></app-form>
             <!--表单 end-->
 
-            <app-table></app-table>
+            <app-table [gridContentArray]="gridContentArray"></app-table>
         </div>
     </div>
 </section>

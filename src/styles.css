@@ -37,6 +37,14 @@ body {
 }
 
 table.ui-jqgrid-htable>thead tr {
-    background: #1681d3;
+    background: #278bd8;
     color: #fff;
+}
+
+tr.ui-jqgrid-labels {
+    height: 40px;
+}
+
+#jqGrid>tbody tr.jqgrow.ui-row-ltr.ui-widget-content {
+    height: 40px;
 }

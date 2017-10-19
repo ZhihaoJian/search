@@ -13,13 +13,7 @@ export class FormComponent implements OnInit, AfterViewInit {
 
   form: FormGroup;
   @Input() selection: any;
-  @Input()
-  set gridContentArray(gca: Array<object>) {
-    console.log(gca);
-    if (gca) {
-      this.cfs.createGrid((gca as any).data, (gca as any).chnames, (gca as any).ennames);
-    }
-  }
+
 
 
   constructor(public fb: FormBuilder, public ar: ActivatedRoute, public cfs: CurrentFileServiceService) { }

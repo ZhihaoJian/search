@@ -1,8 +1,8 @@
 <form class="ui form" [formGroup]="form" novalidate (ngSubmit)="onSubmit(form.value)">
   <div class="inline fields">
     <div class="three wide field">
-      <select formControlName='table' class="ui search dropdown">
-        <option *ngFor="let name of tableArray;" value="{{name}}">{{name}}</option>
+      <select formControlName='table' class="ui" id="catalogueSelection">
+        <option *ngFor="let option of selection;" data-id="catalogueId={{option.id}}&tableName={{option.tableName}}">{{option.tableNameCH}}</option>
       </select>
     </div>
     <div class="field eleven wide">

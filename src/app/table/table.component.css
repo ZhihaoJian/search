@@ -1,3 +1,56 @@
 #gridContainer {
     border: 1px solid #d6d6d6;
 }
+
+#newPager {
+    display: flex;
+    flex-direction: row;
+    background: #eff3f8;
+}
+
+#newPager>div {
+    width: calc(100%/3);
+    height: 27px;
+    display: inline-block;
+    text-align: center;
+    line-height: 25px;
+}
+
+.border-circle {
+    width: 30px;
+    border-radius: 100%;
+    background: #fff;
+}
+
+.border-circle:hover {
+    cursor: pointer;
+}
+
+.border-circle {
+    margin-right: 1rem;
+}
+
+.border-circle i {
+    font-size: 1.5rem;
+    color: #8e8e8e;
+}
+
+.sperator::after {
+    content: "|";
+    width: 1px;
+    font-size: 1.5rem;
+    color: #ccc;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+input {
+    width: 30px;
+    border: 1px solid #ccc;
+    text-align: center
+}
+
+.viewRecords {
+    text-align: right !important;
+    margin-right: 1rem;
+}
