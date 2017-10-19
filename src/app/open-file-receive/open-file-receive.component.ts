@@ -1,5 +1,6 @@
-import { Component, OnInit, HostBinding } from '@angular/core';
+import { Component, OnInit, HostBinding, Output } from '@angular/core';
 import { slideInOutAnimation } from '../animation/animation';
+import { CurrentFileServiceService } from '../service/currentFile/current-file-service.service';
 
 @Component({
   selector: 'app-open-file-receive',
@@ -10,13 +11,53 @@ import { slideInOutAnimation } from '../animation/animation';
 })
 export class OpenFileReceiveComponent implements OnInit {
 
+  @Output() selection: any;
+  @Output() gridContentArray;
+  chnames: Array<string>;
+  ennames: Array<string>;
   @HostBinding('@routeAnimation') routeAnimation = true;
   @HostBinding('style.display') display = 'block';
   @HostBinding('style.position') position = 'absolute'
 
-  constructor() { }
+  constructor(private cfs: CurrentFileServiceService) { }
 
   ngOnInit() {
+    this.getSelectionValue();
   }
 
+  // 首次加载从服务器获取 开放档案服务的数据，期间用遮罩显示‘加载中...’，加载完毕去除遮罩
+  private getSelectionValue() {
+    this.cfs.initLoading('/app/appController/getCatalogueTree')
+      .then(res => {
+        this.sperateData(res);
+        return res;
+      }).then(data => {
+        this.getFirstGridContent(data);
+      })
+  }
+
+  // 请求下拉框第一个选项的表格内容
+  private getFirstGridContent(data: any) {
+    const tableName = (data as any).data[0].tableName;
+    const id = (data as any).data[0].id;
+
+    this.cfs
+      .getFirstSelectionGrid('/app/appController/loadDataForTableHeader', tableName, id)
+      .then(res => {
+        console.log(res);
+        this.gridContentArray = {};
+        this.gridContentArray['chnames'] = (res as any).ch;
+        this.gridContentArray['ennames'] = (res as any).en;
+        this.gridContentArray['data'] = (res as any).data.obj.list;
+      })
+  }
+
+
+  /**
+   * 数组结构
+   * @param data 元数据
+   */
+  private sperateData(data: any) {
+    this.selection = data.data;
+  }
 }

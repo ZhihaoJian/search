@@ -1,6 +1,6 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { tableArray } from '../service/currentFile/current-file-service.service';
+import { CurrentFileServiceService } from '../service/currentFile/current-file-service.service';
 import { ActivatedRoute } from '@angular/router';
 declare var $: any;
 
@@ -12,9 +12,17 @@ declare var $: any;
 export class FormComponent implements OnInit, AfterViewInit {
 
   form: FormGroup;
-  tableArray = tableArray;
+  @Input() selection: any;
+  @Input()
+  set gridContentArray(gca: Array<object>) {
+    console.log(gca);
+    if (gca) {
+      this.cfs.createGrid((gca as any).data, (gca as any).chnames, (gca as any).ennames);
+    }
+  }
 
-  constructor(public fb: FormBuilder, public ar: ActivatedRoute) { }
+
+  constructor(public fb: FormBuilder, public ar: ActivatedRoute, public cfs: CurrentFileServiceService) { }
 
   ngOnInit() {
     this.form = this.fb.group({

@@ -25,4 +25,3 @@ export class AUTH {
         return this.auth;
     }
 }
-
