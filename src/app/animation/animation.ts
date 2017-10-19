@@ -4,7 +4,8 @@ export const slideInOutAnimation: AnimationEntryMetadata =
     trigger('routeAnimation', [
         state('*', style({
             opacity: 1,
-            transform: 'translateX(35%)'
+            transform: 'translateX(-50%)',
+            left: '50%'
         })),
         transition(':enter', [
             style({

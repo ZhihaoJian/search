@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 
+@import '../node_modules/jqgrid/css/ui.jqgrid.css';
 section {
     padding-top: 100px;
 }
@@ -14,4 +15,36 @@ body {
 
 .color-white {
     color: #fff !important;
+}
+
+
+/* jqGrid样式 */
+
+#gridContainer {
+    overflow: hidden;
+}
+
+#gview_jqGird>div.ui-jqgrid-bdiv,
+#pager,
+#gview_jqGrid,
+#gview_jqGrid>div.ui-jqgrid-hdiv,
+#gbox_jqGrid {
+    width: 100% !important;
+}
+
+#jqGrid>tbody tr td {
+    font-size: 1rem;
+}
+
+table.ui-jqgrid-htable>thead tr {
+    background: #278bd8;
+    color: #fff;
+}
+
+tr.ui-jqgrid-labels {
+    height: 40px;
+}
+
+#jqGrid>tbody tr.jqgrow.ui-row-ltr.ui-widget-content {
+    height: 40px;
 }

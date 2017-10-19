@@ -1,5 +1,7 @@
 import { Component, OnInit, AfterViewInit, HostBinding } from '@angular/core';
 import { slideInOutAnimation } from '../animation/animation';
+import { CurrentFileServiceService } from '../service/currentFile/current-file-service.service';
+
 declare var $: any;
 
 @Component({
@@ -7,7 +9,6 @@ declare var $: any;
   templateUrl: './current-file.component.html',
   styleUrls: ['./current-file.component.css'],
   animations: [slideInOutAnimation]
-
 })
 export class CurrentFileComponent implements OnInit, AfterViewInit {
 
@@ -15,7 +16,8 @@ export class CurrentFileComponent implements OnInit, AfterViewInit {
   @HostBinding('style.display') display = 'block';
   @HostBinding('style.position') position = 'absolute'
 
-  constructor() { }
+  constructor(private cfs: CurrentFileServiceService) { }
+
 
   ngOnInit() {
   }
@@ -23,23 +25,5 @@ export class CurrentFileComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
   }
 
-  search() {
-    // 第一次加载默认关闭折叠面板
-    $('#advancedSearch').accordion('close', 0);
-    $('#searchModal').modal('show');
-    // 现行文件服务  搜索按钮 高级检索
-    $('#advancedSearchBtn').on('click', function (e) {
-      e.stopPropagation();
-      $('#advancedSearch').accordion('toggle', 0);
-    });
-  }
-
-  export() {
-    $('#export').modal('show');
-  }
-
-  print() {
-    $('#printEFile').modal('show');
-  }
 
 }

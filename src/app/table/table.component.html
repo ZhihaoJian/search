@@ -1,46 +1,54 @@
-<table class="ui celled table">
-  <thead>
-    <tr>
-      <th>Header</th>
-      <th>Header</th>
-      <th>Header</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>
-        <div class="ui ribbon label">First</div>
-      </td>
-      <td>Cell</td>
-      <td>Cell</td>
-    </tr>
-    <tr>
-      <td>Cell</td>
-      <td>Cell</td>
-      <td>Cell</td>
-    </tr>
-    <tr>
-      <td>Cell</td>
-      <td>Cell</td>
-      <td>Cell</td>
-    </tr>
-  </tbody>
-  <tfoot>
-    <tr>
-      <th colspan="3">
-        <div class="ui right floated pagination menu">
-          <a class="icon item">
-            <i class="left chevron icon"></i>
-          </a>
-          <a class="item">1</a>
-          <a class="item">2</a>
-          <a class="item">3</a>
-          <a class="item">4</a>
-          <a class="icon item">
-            <i class="right chevron icon"></i>
-          </a>
+<div id="gridContainer">
+    <table class="ui celled table" id="jqGrid">
+
+    </table>
+
+    <!-- <div id="pager" style="width:100% !important;">
+
+    </div> -->
+
+    <div id="newPager">
+        <div></div>
+        <div>
+            <div>
+                <span class="border-circle" id="first-page" #firstPage (click)="onChangePage(firstPage.id)">
+                    <i class="fa fa-angle-double-left" aria-hidden="true"></i>
+                </span>
+                <span class="border-circle" id="pre-page" #prePage (click)="onChangePage(prePage.id)">
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                </span>
+
+                <span class="sperator"></span>
+
+                <span>
+                    第
+                    <input type="text" value="1" #currentPage id="currentPage"> 页 共
+                    <span style="margin-left:1rem" id="totalPage"> {{totalPage}} </span>页
+                </span>
+
+                <span class="sperator"></span>
+
+                <span class="border-circle" id="next-page" #nextPage (click)="onChangePage(nextPage.id)">
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </span>
+                <span class="border-circle" id="last-page" #lastPage (click)="onChangePage(lastPage.id)">
+                    <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                </span>
+                <select name="" #pageSize>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="500">500</option>
+                </select>
+            </div>
         </div>
-      </th>
-    </tr>
-  </tfoot>
-</table>
+        <div class="viewRecords">
+            第1到
+            <span id="resultsLength"> {{resultsLength}}</span>条
+            <span style="margin-left:1rem;">共
+                <span id="totalRecord">{{totalRecord}}</span>条
+            </span>
+        </div>
+    </div>
+</div>
