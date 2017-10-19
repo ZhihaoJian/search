@@ -1,4 +1,4 @@
-import { Component, OnInit, HostBinding, Output } from '@angular/core';
+import { Component, OnInit, HostBinding, Output, EventEmitter } from '@angular/core';
 import { slideInOutAnimation } from '../animation/animation';
 import { CurrentFileServiceService } from '../service/currentFile/current-file-service.service';
 
@@ -13,6 +13,7 @@ export class OpenFileReceiveComponent implements OnInit {
 
   @Output() selection: any;
   @Output() gridContentArray;
+  pagerInfo;
   chnames: Array<string>;
   ennames: Array<string>;
   @HostBinding('@routeAnimation') routeAnimation = true;
@@ -50,6 +51,10 @@ export class OpenFileReceiveComponent implements OnInit {
         this.gridContentArray['ennames'] = (res as any).en;
         this.gridContentArray['data'] = (res as any).data.obj.list;
       })
+  }
+
+  onGetPagerInfo(info: any) {
+    this.pagerInfo = info;
   }
 
 

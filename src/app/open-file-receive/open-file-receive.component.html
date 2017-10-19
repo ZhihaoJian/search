@@ -3,10 +3,10 @@
     <div class="ui container" id="content-container">
         <div id="openFileService">
             <!--表单 start-->
-            <app-form [selection]="selection"></app-form>
+            <app-form [selection]="selection" (pagerInfo)="onGetPagerInfo($event)"></app-form>
             <!--表单 end-->
 
-            <app-table [gridContentArray]="gridContentArray"></app-table>
+            <app-table [gridContentArray]="gridContentArray" [pagerInfo]="pagerInfo"></app-table>
         </div>
     </div>
 </section>

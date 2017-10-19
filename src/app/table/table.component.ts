@@ -9,19 +9,27 @@ declare var $: any;
 })
 export class TableComponent implements OnInit, AfterViewInit {
 
-  private totleRecord = 0;
+  private totalRecord = 0;
   private totalPage = 0;
   private resultsLength = 0;
+  private gridArray = {};
   @ViewChild('currentPage') currentPage: ElementRef;
   @ViewChild('pageSize') pageSize: ElementRef;
+
+  @Input()
+  set pagerInfo(pagerInfo: Array<number>) {
+    if (pagerInfo) {
+      console.log(pagerInfo);
+      [this.resultsLength, this.totalRecord, this.currentPage.nativeElement.value, this.totalPage] = pagerInfo;
+    }
+  }
+
 
   @Input()
   set gridContentArray(gca: Array<object>) {
     console.log(gca);
     if (gca) {
-      this.resultsLength = (gca as any).data.results.length;
-      this.totleRecord = (gca as any).data.totalRecord;
-      this.totalPage = (gca as any).data.totalPage;
+      this.readyCreateGrid(gca);
       this.cfs.createGrid((gca as any).data, (gca as any).chnames, (gca as any).ennames);
     }
   }
@@ -35,47 +43,92 @@ export class TableComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * 创建表格前对分页数据进行处理
+   * @param gca
+   */
+  private readyCreateGrid(gca: any) {
+    try {
+      this.resultsLength = (gca as any).data.results.length;
+    } catch (error) {
+      this.resultsLength = 0;
+    }
+    try {
+      this.totalRecord = (gca as any).data.totalRecord;
+    } catch (error) {
+      this.totalRecord = 0;
+    }
+    try {
+      this.totalPage = (gca as any).data.totalPage;
+    } catch (error) {
+      this.totalPage = 0;
+    }
+  }
+
+
+  /**
    * 点击分页面板切换页面
    * @param direction 方向
    */
-  onChangePage(direction) {
+  private onChangePage(direction) {
+    const canPost = this.changePageIndex(direction);
+    if (canPost) {
+      this.getTableNameAndCataId();
+    }
+  }
 
-    // 改变分页面板分页值
-    if (direction === 'first-page') {
+  /**
+   * 根据点击分页的不同，改变分页页码的大小
+   * @param direction
+   */
+  private changePageIndex(direction): boolean {
+
+    const canPost = true;
+    const curPageNum = parseInt(this.currentPage.nativeElement.value, 10);
+
+    if (direction === 'first-page' && curPageNum > 1) {
       this.currentPage.nativeElement.value = 1;
     } else if (direction === 'next-page') {
-      if (parseInt(this.currentPage.nativeElement.value, 10) + 1 > this.totalPage) {
-        return;
+      if (curPageNum + 1 > this.totalPage) {
+        return !canPost;
       }
-      this.currentPage.nativeElement.value = parseInt(this.currentPage.nativeElement.value, 10) + 1;
-
+      this.currentPage.nativeElement.value = curPageNum + 1;
     } else if (direction === 'last-page') {
-      this.currentPage.nativeElement.value = this.totalPage;
-    } else {
-      if (this.currentPage.nativeElement.value - 1 <= 0) {
-        return;
+      if (this.totalPage && curPageNum !== this.totalPage) {
+        this.currentPage.nativeElement.value = this.totalPage;
+      } else {
+        return !canPost;
       }
-      this.currentPage.nativeElement.value = parseInt(this.currentPage.nativeElement.value, 10) - 1;
+    } else {
+      if (curPageNum - 1 <= 0) {
+        return !canPost;
+      }
+      this.currentPage.nativeElement.value = curPageNum - 1;
     }
 
+    return canPost;
+  }
+
+  /**
+   * 根据当前下拉框的选中项，获取tableName、cataId、pageSize然后请求分页
+   */
+  private getTableNameAndCataId() {
     // 获取下拉框的参数（含有当前门类的tableName和cataId）
     const selection = $('#catalogueSelection')[0];
-    const selectedIndex = selection.selectedIndex;
-    const params = selection.selectedOptions[selectedIndex].id;
+    // const selectedIndex = selection.selectedIndex;
+    const params = selection.selectedOptions[0].id;
 
-    const index = params.indexOf('&');
-    const tableName = params.substring(0, index);
-    const cataId = params.substring(index + 1);
+    let tableName, cataId;
+    [tableName, cataId] = this.cfs.resolveParams(params);
 
     // 获取pageSize
     const pageSize = this.pageSize.nativeElement.selectedOptions[this.pageSize.nativeElement.options['selectedIndex']].value
 
-    this.cfs.getFirstSelectionGrid(
-      '/app/appController/loadDataForTableHeader',
-      tableName,
-      cataId,
-      this.currentPage.nativeElement.value,
-      pageSize);
+    this.cfs.updateGrid('/app/appController/loadDataForTableHeader', tableName, cataId, this.currentPage.nativeElement.value, pageSize)
+      .then(res => {
+        let data, ch, en;
+        [this.resultsLength, this.totalRecord, this.currentPage.nativeElement.value, this.totalPage, data, ch, en] = (res as any);
+        this.cfs.createGrid(data, ch, en)
+      })
   }
 
 }

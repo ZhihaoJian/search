@@ -22,8 +22,8 @@
 
                 <span>
                     第
-                    <input type="text" value="1" #currentPage> 页
-                    <span style="margin-left:1rem"> 共 {{totalPage}} 页</span>
+                    <input type="text" value="1" #currentPage id="currentPage"> 页 共
+                    <span style="margin-left:1rem" id="totalPage"> {{totalPage}} </span>页
                 </span>
 
                 <span class="sperator"></span>
@@ -45,8 +45,10 @@
         </div>
         <div class="viewRecords">
             第1到
-            <span> {{resultsLength}}</span>条
-            <span style="margin-left:1rem;">共{{totleRecord}}条</span>
+            <span id="resultsLength"> {{resultsLength}}</span>条
+            <span style="margin-left:1rem;">共
+                <span id="totalRecord">{{totalRecord}}</span>条
+            </span>
         </div>
     </div>
 </div>

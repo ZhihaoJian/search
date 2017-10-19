@@ -49,7 +49,7 @@ export class CurrentFileServiceService {
    */
   public getFirstSelectionGrid(url: string, tableName: string, catalogueId: string, pageNum?: number, pageSize?: number) {
 
-
+    this.enableLoading();
     const tableNameArray = {};
 
     return new Promise((resolve, reject) => {
@@ -66,6 +66,7 @@ export class CurrentFileServiceService {
             .then(response => {
               console.log(response)
               resolve(response);
+              this.disableLoading();
             })
         })
         .catch(err => {
@@ -210,7 +211,7 @@ export class CurrentFileServiceService {
   private generateGrid(data: any, colModel: any, header: Array<string>) {
     $('#jqGrid').jqGrid({
       datatype: 'local',
-      data: data.results,
+      data: data.results || [],
       colModel: colModel,
       colNames: header,
       // pager: 'pager',
@@ -260,5 +261,55 @@ export class CurrentFileServiceService {
     const loading = document.getElementById('segment');
     loading.style.display = 'none';
     $('html,body').css('overflow-y', 'auto')
+  }
+
+
+  /**
+   * 处理字符串，获取tableName和cataId
+   * @param params 含有tableName和cataId字符串
+   */
+  public resolveParams(params: string) {
+    const index = params.indexOf('&');
+    const cataId = (params.substring(0, index)).substring('catalogueId='.length);
+    const tableName = (params.substring(index + 1)).substring('tableName='.length);
+
+    return [tableName, cataId];
+  }
+
+  /**
+   * 更新表格（分页）
+   * @param url 分页请求地址
+   * @param tableName 当前表名
+   * @param cataId 当前门类id
+   * @param pageNum 第几页
+   * @param pageSize 每页请求大小
+   */
+  public updateGrid(url: string, tableName: string, cataId: string, pageNum: any, pageSize: any) {
+
+    let resultsLength, totalRecord, currentPage, totalPage;
+
+    return new Promise((resolve, reject) => {
+      this.getFirstSelectionGrid(
+        url,
+        tableName,
+        cataId,
+        pageNum,
+        pageSize).then(res => {
+          $.jgrid.gridUnload('jqGrid');
+
+          const data = (res as any).data.obj.list;
+          const ch = (res as any).ch;
+          const en = (res as any).en;
+
+          // tslint:disable-next-line:triple-equals
+          resultsLength = data.results == undefined ? 0 : data.results.length;
+          totalRecord = data.totalRecord;
+          currentPage = data.pageNum;
+          totalPage = data.totalPage;
+
+          resolve([resultsLength, totalRecord, currentPage, totalPage, data, ch, en]);
+
+        })
+    })
   }
 }
