@@ -20,7 +20,10 @@ export class CurrentFileServiceService {
 
     // 查询开放档案的下拉框
     return new Promise((resolve, reject) => {
-      this.http.post(url, null)
+      this.http.post(url, null, {
+        params: new HttpParams()
+          .set('classifytype', 'FILINGFILE,FILECOMPILING,VOLUMES,ARCHIVES')
+      })
         .subscribe(metaData => {
 
           console.log(metaData);

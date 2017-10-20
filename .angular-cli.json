@@ -23,7 +23,7 @@
         "styles.css",
         "../node_modules/semantic-ui/dist/semantic.min.css",
         "../node_modules/jquery-ui/themes/base/jquery-ui.min.css",
-        "../node_modules/jqGrid/css/ui.jqgrid.css",
+        "../node_modules/jqGrid/css/ui.jqgrid.css"
       ],
       "scripts": [
         "../node_modules/jquery/dist/jquery.min.js",

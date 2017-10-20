@@ -28,19 +28,21 @@ export class OpenFileReceiveComponent implements OnInit {
 
   // 首次加载从服务器获取 开放档案服务的数据，期间用遮罩显示‘加载中...’，加载完毕去除遮罩
   private getSelectionValue() {
-    this.cfs.initLoading('/app/appController/getCatalogueTree')
+    this.cfs.initLoading('/terminal/openArchivesController/getCatalogueTree')
       .then(res => {
         this.sperateData(res);
         return res;
       }).then(data => {
-        this.getFirstGridContent(data);
+
+        const tableName = (data as any).obj[0].other;
+        const id = (data as any).obj[0].id;
+
+        this.getFirstGridContent(tableName, id);
       })
   }
 
   // 请求下拉框第一个选项的表格内容
-  private getFirstGridContent(data: any) {
-    const tableName = (data as any).data[0].tableName;
-    const id = (data as any).data[0].id;
+  private getFirstGridContent(tableName: string, id: string) {
 
     this.cfs
       .getFirstSelectionGrid('/app/appController/loadDataForTableHeader', tableName, id)
@@ -63,6 +65,6 @@ export class OpenFileReceiveComponent implements OnInit {
    * @param data 元数据
    */
   private sperateData(data: any) {
-    this.selection = data.data;
+    this.selection = data.obj;
   }
 }
