@@ -34,7 +34,7 @@
                 <span class="border-circle" id="last-page" #lastPage (click)="onChangePage(lastPage.id)">
                     <i class="fa fa-angle-double-right" aria-hidden="true"></i>
                 </span>
-                <select name="" #pageSize>
+                <select name="" #pageSize (change)="onChangePageSize(pageSize)">
                     <option value="10">10</option>
                     <option value="20">20</option>
                     <option value="50">50</option>
@@ -44,7 +44,7 @@
             </div>
         </div>
         <div class="viewRecords">
-            第1到
+            第{{currentStartIndex}}到
             <span id="resultsLength"> {{resultsLength}}</span>条
             <span style="margin-left:1rem;">共
                 <span id="totalRecord">{{totalRecord}}</span>条

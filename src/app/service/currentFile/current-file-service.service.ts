@@ -9,7 +9,7 @@ declare var $: any;
 export class CurrentFileServiceService {
 
   private auth: AUTH;
-  private IP = 'http://192.168.88.2:8080';
+  private IP = 'http://192.168.88.2:7070';
 
   constructor(private http: HttpClient) {
   }
@@ -285,6 +285,24 @@ export class CurrentFileServiceService {
     return [tableName, cataId];
   }
 
+  public getParams(DOM_catalogue: string, pageSize: number, pageNum?: number) {
+    // 获取下拉框的参数（含有当前门类的tableName和cataId）
+    const selection = $(DOM_catalogue.toString())[0];
+    // const selectedIndex = selection.selectedIndex;
+    const params = selection.selectedOptions[0].id;
+
+    let tableName, cataId;
+    [tableName, cataId] = this.resolveParams(params);
+
+
+    if (!pageNum) {
+      pageNum = 1;
+    }
+
+
+    return [tableName, cataId, pageSize, pageNum];
+  }
+
   /**
    * 更新表格（分页）
    * @param url 分页请求地址
@@ -293,7 +311,7 @@ export class CurrentFileServiceService {
    * @param pageNum 第几页
    * @param pageSize 每页请求大小
    */
-  public updateGrid(url: string, tableName: string, cataId: string, pageNum: any, pageSize: any) {
+  public updateGrid(url: string, tableName: string, cataId: string, pageNum: any, pageSize: any, keyWord?: string) {
 
     let resultsLength, totalRecord, currentPage, totalPage;
 
@@ -303,7 +321,8 @@ export class CurrentFileServiceService {
         tableName,
         cataId,
         pageNum,
-        pageSize).then(res => {
+        pageSize,
+        keyWord).then(res => {
           $.jgrid.gridUnload('jqGrid');
 
           const data = (res as any).data.obj.list;

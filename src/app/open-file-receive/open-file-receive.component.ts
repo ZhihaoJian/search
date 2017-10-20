@@ -56,6 +56,7 @@ export class OpenFileReceiveComponent implements OnInit {
   }
 
   onGetPagerInfo(info: any) {
+    console.log(info);
     this.pagerInfo = info;
   }
 

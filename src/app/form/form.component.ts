@@ -57,7 +57,18 @@ export class FormComponent implements OnInit, AfterViewInit {
     [tableName, cataId] = this.cfs.resolveParams(value.tableNameAndCataId);
 
     if (location.pathname === '/openFile') {
-      this.cfs.getFirstSelectionGrid('/terminal/openArchivesController/loadDataForTableHeader', tableName, cataId, 1, 10, value.keyword);
+
+      this.cfs.updateGrid('/terminal/openArchivesController/loadDataForTableHeader',
+        tableName, cataId,
+        1,
+        10,
+        value.keyword)
+        .then(res => {
+
+          this.pagerInfo.emit(res);
+        })
+
+
     } else if (location.pathname === '/currentFile') {
 
     } else {
