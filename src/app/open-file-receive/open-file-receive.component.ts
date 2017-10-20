@@ -41,11 +41,11 @@ export class OpenFileReceiveComponent implements OnInit {
       })
   }
 
-  // 请求下拉框第一个选项的表格内容
+  // 根据表名和门类id 请求下拉框第一个选项的表格内容
   private getFirstGridContent(tableName: string, id: string) {
 
     this.cfs
-      .getFirstSelectionGrid('/app/appController/loadDataForTableHeader', tableName, id)
+      .getFirstSelectionGrid('/terminal/openArchivesController/loadDataForTableHeader', tableName, id)
       .then(res => {
         console.log(res);
         this.gridContentArray = {};

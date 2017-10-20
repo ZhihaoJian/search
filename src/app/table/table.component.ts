@@ -123,7 +123,7 @@ export class TableComponent implements OnInit, AfterViewInit {
     // 获取pageSize
     const pageSize = this.pageSize.nativeElement.selectedOptions[this.pageSize.nativeElement.options['selectedIndex']].value
 
-    this.cfs.updateGrid('/app/appController/loadDataForTableHeader', tableName, cataId, this.currentPage.nativeElement.value, pageSize)
+    this.cfs.updateGrid('/terminal/openArchivesController/loadDataForTableHeader', tableName, cataId, this.currentPage.nativeElement.value, pageSize)
       .then(res => {
         let data, ch, en;
         [this.resultsLength, this.totalRecord, this.currentPage.nativeElement.value, this.totalPage, data, ch, en] = (res as any);

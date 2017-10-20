@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { CurrentFileServiceService } from '../service/currentFile/current-file-service.service';
 import { ActivatedRoute } from '@angular/router';
@@ -12,8 +12,27 @@ declare var $: any;
 export class FormComponent implements OnInit, AfterViewInit {
 
   form: FormGroup;
-  @Input() selection: any;
+  private options;
+
+  @Input()
+  set selection(selection: any) {
+    if (selection) {
+      // 填充下拉框
+      this.options = selection;
+
+      // 填充下拉框的默认值 catalogueId={{option.id}}&tableName={{option.other}}
+      const newValue = `catalogueId=${this.options[0].id}&tableName=${this.options[0].other}`
+      this.form.get('tableNameAndCataId').setValue(newValue);
+
+      // 渲染下拉列表后填充默认值
+      setTimeout(function () {
+        this.catalogueSelection.options[0].selected = true;
+      }, 500);
+    }
+  };
+
   @Output() pagerInfo = new EventEmitter();
+  @ViewChild('catalogueSelection') catalogueSelection: ElementRef;
 
 
 
@@ -21,8 +40,8 @@ export class FormComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.form = this.fb.group({
-      table: [''],
-      input: ['']
+      tableNameAndCataId: [''],
+      keyword: ['']
     })
   }
 
@@ -32,8 +51,13 @@ export class FormComponent implements OnInit, AfterViewInit {
   }
 
   onSubmit(value: any) {
-    if (location.pathname === '/openFile') {
+    console.log(value);
 
+    let tableName, cataId;
+    [tableName, cataId] = this.cfs.resolveParams(value.tableNameAndCataId);
+
+    if (location.pathname === '/openFile') {
+      this.cfs.getFirstSelectionGrid('/terminal/openArchivesController/loadDataForTableHeader', tableName, cataId, 1, 10, value.keyword);
     } else if (location.pathname === '/currentFile') {
 
     } else {
@@ -49,7 +73,7 @@ export class FormComponent implements OnInit, AfterViewInit {
 
     let resultsLength, totalRecord, currentPage, totalPage, data, ch, en;
 
-    this.cfs.updateGrid('/app/appController/loadDataForTableHeader', tableName, cataId, '1', '10')
+    this.cfs.updateGrid('/terminal/openArchivesController/loadDataForTableHeader', tableName, cataId, '1', '10')
       .then(res => {
         [resultsLength, totalRecord, currentPage, totalPage, data, ch, en] = (res as any);
         this.pagerInfo.emit([resultsLength, totalRecord, currentPage, totalPage]);

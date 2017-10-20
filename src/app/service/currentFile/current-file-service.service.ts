@@ -22,7 +22,7 @@ export class CurrentFileServiceService {
     return new Promise((resolve, reject) => {
       this.http.post(url, null, {
         params: new HttpParams()
-          .set('classifytype', 'FILINGFILE,FILECOMPILING,VOLUMES,ARCHIVES')
+          .set('classifyType', 'FILINGFILE,FILECOMPILING,VOLUMES,ARCHIVES')
       })
         .subscribe(metaData => {
 
@@ -50,7 +50,7 @@ export class CurrentFileServiceService {
    * @param tableName 表名（英文）
    * @param catalogueId 请求ID
    */
-  public getFirstSelectionGrid(url: string, tableName: string, catalogueId: string, pageNum?: number, pageSize?: number) {
+  public getFirstSelectionGrid(url: string, tableName: string, catalogueId: string, pageNum?: number, pageSize?: number, keyword?: string) {
 
     this.enableLoading();
     const tableNameArray = {};
@@ -65,7 +65,7 @@ export class CurrentFileServiceService {
           return tableNameArray;
         })
         .then(res => {
-          this.getDataFromDb(tableName, url, catalogueId, tableNameArray, (res as any).en, pageNum, pageSize)
+          this.getDataFromDb(tableName, url, catalogueId, tableNameArray, (res as any).en, pageNum, pageSize, keyword)
             .then(response => {
               console.log(response)
               resolve(response);
@@ -86,7 +86,8 @@ export class CurrentFileServiceService {
     tableNameArray: object,
     tableNameEns: Array<string>,
     pageNum?: number,
-    pageSize?: number) {
+    pageSize?: number,
+    keyword?: string) {
 
     const dbName = 'eddc_open.';
     const requestUrl = this.IP + url;
@@ -99,6 +100,10 @@ export class CurrentFileServiceService {
       pageSize = 10;
     }
 
+    if (!keyword) {
+      keyword = '';
+    }
+
     return new Promise((resolve, reject) => {
       this.http.post(requestUrl, null, {
         params: new HttpParams()
@@ -107,6 +112,7 @@ export class CurrentFileServiceService {
           .set('tableHeaders', tableNameEns.toString())
           .set('pageNum', pageNum.toString())
           .set('pageSize', pageSize.toString())
+          .set('keyWord', keyword)
       })
         .subscribe(data => {
           tableNameArray['data'] = data;
@@ -121,7 +127,7 @@ export class CurrentFileServiceService {
    * @param tableName 表头名
    */
   private getTableHeader(tableName: string): Promise<any> {
-    const requestUrl = this.IP + '/app/appController/getTableHeader';
+    const requestUrl = this.IP + '/terminal/openArchivesController/getTableHeader';
 
     return new Promise((resolve, reject) => {
       this.http.post(requestUrl, null, {
