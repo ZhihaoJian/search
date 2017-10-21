@@ -1,0 +1,8 @@
+.red {
+    color: red !important;
+    margin-right: 5px !important;
+}
+
+#check-file-modal>div.scrolling>form {
+    margin-top: 1rem;
+}

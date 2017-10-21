@@ -1,10 +1,58 @@
 <!-- 编研服务 start -->
 <section>
   <div class="ui container">
-
-    <app-form></app-form>
-
-    <app-table></app-table>
+    <button type="button" class="ui button blue tiny" (click)="onCheckArchiveFile()">查看编研文件</button>
+    <div style="margin-top:2rem">
+      <app-table [gridContentArray]="gridContentArray" [pagerInfo]="pagerInfo"></app-table>
+    </div>
   </div>
 </section>
 <!-- 编研服务 end -->
+
+<!-- 错误提示 -->
+<div class="ui basic modal" id="error-modal">
+  <div class="header" style="color:red">
+    <i class="large disabled warning sign icon"></i>
+    错误</div>
+  <div class="content">
+    <p>{{errorMsg}}</p>
+  </div>
+  <div class="actions">
+    <div class="ui green ok inverted button">
+      确定
+    </div>
+  </div>
+</div>
+
+<!-- 查看编研文件 -->
+<div class="ui modal" id="check-file-modal">
+  <div class="header">查看</div>
+  <div class="scrolling content">
+
+    <div class="ui styled fluid accordion">
+      <div class="title active">
+        <i class="dropdown icon"></i> 显示列表 </div>
+      <div class="content">
+        <app-table></app-table>
+      </div>
+    </div>
+
+    <form action="" class="ui form">
+      <div class=" two fields">
+        <div class="field">
+          <label for="title">
+            <i class="red">*</i>编研标题
+          </label>
+          <input type="text" disabled value="组织沿革编研文件任务0001" id="title">
+        </div>
+        <div class="field">
+          <label for="time" class="three wide">
+            <i class="red">*</i>编研时间
+          </label>
+          <input type="text" disabled value="2017-10-19" id="time">
+        </div>
+      </div>
+    </form>
+
+  </div>
+</div>

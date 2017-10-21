@@ -20,8 +20,7 @@
           编研服务
         </a>
         <a class="item" id="ratingBtn" #ratingBtn data-index='3' [ngClass]="{active:onlineComment.dataset['index']===linkIndex }"
-          (click)="onShowRatingModal($event.target.dataset['index'])" (click)="onChangeForcus(onlineComment.dataset['index'])"
-          #onlineComment>
+          (click)="onShowRatingModal()" #onlineComment>
           在线评价
         </a>
       </div>
