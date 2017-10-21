@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input, ViewChild, ElementRef, SimpleChanges } from '@angular/core';
 import { CurrentFileServiceService } from '../service/currentFile/current-file-service.service';
 import { TableService } from '../service/tableService/table.service';
 declare var $: any;
@@ -16,6 +16,7 @@ export class TableComponent implements OnInit, AfterViewInit {
   private resultsLength = 0;
   private gridArray = {};
   private currentStartIndex = 1;
+  private previousPageSize = 10;
   @ViewChild('currentPage') currentPage: ElementRef;
   @ViewChild('pageSize') pageSize: ElementRef;
 
@@ -122,19 +123,36 @@ export class TableComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * 根据每页显示页数量不同，更换表格数据
+   * 根据分页显示条目数不同，更新请求pageSize和pageNum,更新表格
    * @param page
    */
   onChangePageSize(page) {
+    // 改变的条目数
     const pageSize = parseInt(page.options[page.selectedIndex].value, 10);
 
-    // 计算请求后的总页数
-    const requestTotalPage = Math.floor((this.totalRecord / pageSize)) + 1;
+    // 计算出来，最后应该所在的页号
+    let resultNum = 1;
 
-    this.getTableNameAndCataId(this.currentPage.nativeElement.value, pageSize);
+    // 当前所在页页号
+    const currentPageNum = parseInt(this.currentPage.nativeElement.value, 10);
+
+    if (currentPageNum === 1) {
+      this.getTableNameAndCataId(1, pageSize);
+      return;
+    }
+
+    if (pageSize > this.previousPageSize) {
+      resultNum = Math.floor((currentPageNum * this.previousPageSize + 1) / pageSize) + 1;
+    } else {
+      resultNum = (currentPageNum * this.previousPageSize + 1) / pageSize - 1;
+    }
+
+
+    this.getTableNameAndCataId(resultNum, pageSize);
+
+    // 更新条目数
+    this.previousPageSize = pageSize;
   }
-
-
 
 
 }
