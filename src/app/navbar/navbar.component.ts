@@ -8,7 +8,7 @@ declare var $: any;
 })
 export class NavbarComponent implements OnInit, AfterViewInit {
 
-  private linkIndex = '0';
+  public linkIndex = '0';
 
   constructor() { }
 

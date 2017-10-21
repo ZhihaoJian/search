@@ -11,12 +11,12 @@ declare var $: any;
 })
 export class TableComponent implements OnInit, AfterViewInit {
 
-  private totalRecord = 0;
-  private totalPage = 0;
-  private resultsLength = 0;
-  private gridArray = {};
-  private currentStartIndex = 1;
-  private previousPageSize = 10;
+  public totalRecord = 0;
+  public totalPage = 0;
+  public resultsLength = 0;
+  public gridArray = {};
+  public currentStartIndex = 1;
+  public previousPageSize = 10;
   @ViewChild('currentPage') currentPage: ElementRef;
   @ViewChild('pageSize') pageSize: ElementRef;
 
@@ -36,7 +36,10 @@ export class TableComponent implements OnInit, AfterViewInit {
     console.log(gca);
     if (gca) {
       this.readyCreateGrid(gca);
-      this.cfs.createGrid((gca as any).data, (gca as any).chnames, (gca as any).ennames);
+
+      const newGCA = (gca as any);
+
+      this.cfs.createGrid(newGCA.data, newGCA.chnames, newGCA.ennames, newGCA.hasOwnProperty('config') ? newGCA['config'] : null);
     }
   }
   constructor(private cfs: CurrentFileServiceService, private tbs: TableService) { }
@@ -52,7 +55,7 @@ export class TableComponent implements OnInit, AfterViewInit {
    * 创建表格前对分页数据进行处理
    * @param gca
    */
-  private readyCreateGrid(gca: any) {
+  public readyCreateGrid(gca: any) {
     try {
       this.resultsLength = (gca as any).data.results.length;
     } catch (error) {
@@ -75,7 +78,7 @@ export class TableComponent implements OnInit, AfterViewInit {
    * 点击分页面板切换页面
    * @param direction 方向
    */
-  private onChangePage(direction) {
+  public onChangePage(direction) {
     const canPost = this.changePageIndex(direction);
     if (canPost) {
       // 获取pageSize
@@ -88,7 +91,7 @@ export class TableComponent implements OnInit, AfterViewInit {
    * 根据点击分页的不同，改变分页页码的大小
    * @param direction
    */
-  private changePageIndex(direction): boolean {
+  public changePageIndex(direction): boolean {
 
     const canPost = true;
     const curPageNum = parseInt(this.currentPage.nativeElement.value, 10);
@@ -99,7 +102,7 @@ export class TableComponent implements OnInit, AfterViewInit {
   /**
    * 根据当前下拉框的选中项，获取tableName、cataId、pageSize然后请求分页
    */
-  private getTableNameAndCataId(pageNum?: number, pageSize?: number) {
+  public getTableNameAndCataId(pageNum?: number, pageSize?: number) {
 
     let tableName, cataId;
 
@@ -126,7 +129,7 @@ export class TableComponent implements OnInit, AfterViewInit {
    * 根据分页显示条目数不同，更新请求pageSize和pageNum,更新表格
    * @param page
    */
-  private onChangePageSize(page) {
+  public onChangePageSize(page) {
     // 改变的条目数
     const pageSize = parseInt(page.options[page.selectedIndex].value, 10);
 

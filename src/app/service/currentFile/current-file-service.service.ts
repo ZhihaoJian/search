@@ -174,12 +174,12 @@ export class CurrentFileServiceService {
    * 生成表格
    * @param data 元数据
    */
-  public createGrid(data: object, chNames: Array<string>, enNames: Array<string>) {
+  public createGrid(data: object, chNames: Array<string>, enNames: Array<string>, config?: object) {
 
     if (data) {
       // const headers = this.generateTableHeaders(data);
       const colModel = this.generateColModel(enNames);
-      this.generateGrid(data, colModel, chNames);
+      this.generateGrid(data, colModel, chNames, config);
     }
   }
 
@@ -224,14 +224,25 @@ export class CurrentFileServiceService {
    * 生成grid
    * @param data 服务器回传数据
    * @param colModal 列配置
+   * @param header 中文表头
+   * @param config 自定义配置项
    */
-  private generateGrid(data: any, colModel: any, header: Array<string>) {
+  private generateGrid(data: any, colModel: any, header: Array<string>, config?: object) {
     $('#jqGrid').jqGrid({
       datatype: 'local',
-      data: data.results || [],
       colModel: colModel,
+      localReader: {
+        root: () => {
+          return data.results || [];
+        },
+        id: () => {
+          if (config && config.hasOwnProperty('id')) {
+            return config['id'];
+          }
+          return 'f_id';
+        }
+      },
       colNames: header,
-      // pager: 'pager',
       mtype: 'POST',
       multiselect: true,
       responsive: true,

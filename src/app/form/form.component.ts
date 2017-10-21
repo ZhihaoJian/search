@@ -12,7 +12,7 @@ declare var $: any;
 export class FormComponent implements OnInit, AfterViewInit {
 
   form: FormGroup;
-  private options;
+  public options;
 
   @Input()
   set selection(selection: any) {

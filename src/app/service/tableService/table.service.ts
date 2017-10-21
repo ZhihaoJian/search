@@ -13,7 +13,7 @@ export class TableService {
    * @param dataLength 回传数据长度
    * @param totalRecord 总记录条数
    */
-  changePageIndex(pageNum: number, totalPage: number, dataLength: number, totalRecord: number) {
+  public changePageIndex(pageNum: number, totalPage: number, dataLength: number, totalRecord: number) {
     if (pageNum === 1) {
       return [1, dataLength];
     } else if (pageNum > 1 && pageNum !== totalPage) {
@@ -33,7 +33,7 @@ export class TableService {
    * @param totalPage 总页数
    * @param currentPageDOM 当前页码DOM结点
    */
-  canChangeIndex(direction: string, curPageNum: number, totalPage: number, currentPageDOM: ElementRef): boolean {
+  public canChangeIndex(direction: string, curPageNum: number, totalPage: number, currentPageDOM: ElementRef): boolean {
 
     const canPost = true;
 
@@ -58,5 +58,19 @@ export class TableService {
     }
 
     return canPost;
+  }
+
+  /**
+   * 返回勾选的 checkedbox数组
+   * @param checkBoxArray 当前页面所有checkbox
+   */
+  public getInputBoxChecked(checkBoxArray: Array<HTMLInputElement>): Array<HTMLInputElement> {
+    const boxChecked = [];
+    for (let i = 0; i < checkBoxArray.length; i++) {
+      if (checkBoxArray[i].checked) {
+        boxChecked.push(checkBoxArray[i]);
+      }
+    }
+    return boxChecked;
   }
 }
