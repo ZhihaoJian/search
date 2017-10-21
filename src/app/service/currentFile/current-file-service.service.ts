@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { AUTH } from './mockData';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 
 
@@ -8,19 +7,31 @@ declare var $: any;
 @Injectable()
 export class CurrentFileServiceService {
 
-  private auth: AUTH;
-  private IP = 'http://192.168.88.2:8080';
+  private IP = 'http://192.168.88.2:7070';
 
   constructor(private http: HttpClient) {
   }
 
   // 初始化加载，默认加载 开放档案服务的数据
-  public initLoading(requestUrl: string) {
+  public initLoading(requestUrl: string, params: object) {
     const url = this.IP + requestUrl;
+    let requestParams = new HttpParams();
+
+    // 根据传入的参数构造动态请求参数列表
+    for (const param in params) {
+      if (params.hasOwnProperty(param)) {
+        requestParams = requestParams.set(param.toString(), params[param]);
+      }
+    }
+
 
     // 查询开放档案的下拉框
     return new Promise((resolve, reject) => {
-      this.http.post(url, null)
+      this.http.post(url, null, {
+        params: requestParams
+        // params: new HttpParams()
+        //   .set('classifyType', 'FILINGFILE,FILECOMPILING,VOLUMES,ARCHIVES')
+      })
         .subscribe(metaData => {
 
           console.log(metaData);
@@ -47,7 +58,7 @@ export class CurrentFileServiceService {
    * @param tableName 表名（英文）
    * @param catalogueId 请求ID
    */
-  public getFirstSelectionGrid(url: string, tableName: string, catalogueId: string, pageNum?: number, pageSize?: number) {
+  public getFirstSelectionGrid(url: string, tableName: string, catalogueId: string, pageNum?: number, pageSize?: number, keyword?: string) {
 
     this.enableLoading();
     const tableNameArray = {};
@@ -62,7 +73,7 @@ export class CurrentFileServiceService {
           return tableNameArray;
         })
         .then(res => {
-          this.getDataFromDb(tableName, url, catalogueId, tableNameArray, (res as any).en, pageNum, pageSize)
+          this.getDataFromDb(tableName, url, catalogueId, tableNameArray, (res as any).en, pageNum, pageSize, keyword)
             .then(response => {
               console.log(response)
               resolve(response);
@@ -83,7 +94,8 @@ export class CurrentFileServiceService {
     tableNameArray: object,
     tableNameEns: Array<string>,
     pageNum?: number,
-    pageSize?: number) {
+    pageSize?: number,
+    keyword?: string) {
 
     const dbName = 'eddc_open.';
     const requestUrl = this.IP + url;
@@ -96,6 +108,10 @@ export class CurrentFileServiceService {
       pageSize = 10;
     }
 
+    if (!keyword) {
+      keyword = '';
+    }
+
     return new Promise((resolve, reject) => {
       this.http.post(requestUrl, null, {
         params: new HttpParams()
@@ -104,6 +120,7 @@ export class CurrentFileServiceService {
           .set('tableHeaders', tableNameEns.toString())
           .set('pageNum', pageNum.toString())
           .set('pageSize', pageSize.toString())
+          .set('keyWord', keyword)
       })
         .subscribe(data => {
           tableNameArray['data'] = data;
@@ -118,7 +135,7 @@ export class CurrentFileServiceService {
    * @param tableName 表头名
    */
   private getTableHeader(tableName: string): Promise<any> {
-    const requestUrl = this.IP + '/app/appController/getTableHeader';
+    const requestUrl = this.IP + '/terminal/openArchivesController/getTableHeader';
 
     return new Promise((resolve, reject) => {
       this.http.post(requestUrl, null, {
@@ -276,6 +293,24 @@ export class CurrentFileServiceService {
     return [tableName, cataId];
   }
 
+  public getParams(DOM_catalogue: string, pageSize: number, pageNum?: number) {
+    // 获取下拉框的参数（含有当前门类的tableName和cataId）
+    const selection = $(DOM_catalogue.toString())[0];
+    // const selectedIndex = selection.selectedIndex;
+    const params = selection.selectedOptions[0].id;
+
+    let tableName, cataId;
+    [tableName, cataId] = this.resolveParams(params);
+
+
+    if (!pageNum) {
+      pageNum = 1;
+    }
+
+
+    return [tableName, cataId, pageSize, pageNum];
+  }
+
   /**
    * 更新表格（分页）
    * @param url 分页请求地址
@@ -284,7 +319,7 @@ export class CurrentFileServiceService {
    * @param pageNum 第几页
    * @param pageSize 每页请求大小
    */
-  public updateGrid(url: string, tableName: string, cataId: string, pageNum: any, pageSize: any) {
+  public updateGrid(url: string, tableName: string, cataId: string, pageNum: any, pageSize: any, keyWord?: string) {
 
     let resultsLength, totalRecord, currentPage, totalPage;
 
@@ -294,7 +329,8 @@ export class CurrentFileServiceService {
         tableName,
         cataId,
         pageNum,
-        pageSize).then(res => {
+        pageSize,
+        keyWord).then(res => {
           $.jgrid.gridUnload('jqGrid');
 
           const data = (res as any).data.obj.list;

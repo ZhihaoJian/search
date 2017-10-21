@@ -24,11 +24,12 @@
         "../node_modules/semantic-ui/dist/semantic.min.css",
         "../node_modules/jquery-ui/themes/base/jquery-ui.min.css",
         "../node_modules/jqGrid/css/ui.jqgrid.css",
+        "../node_modules/font-awesome-4.7.0/css/font-awesome.min.css"
       ],
       "scripts": [
         "../node_modules/jquery/dist/jquery.min.js",
         "../node_modules/web-animations-js/web-animations-next.min.js",
-        "../node_modules/semantic-ui/dist/semantic.min.js",        
+        "../node_modules/semantic-ui/dist/semantic.min.js",
         "../node_modules/jqGrid/js/i18n/grid.locale-cn.js",
         "../node_modules/jqGrid/js/jquery.jqGrid.js"
       ],
