@@ -126,7 +126,7 @@ export class TableComponent implements OnInit, AfterViewInit {
    * 根据分页显示条目数不同，更新请求pageSize和pageNum,更新表格
    * @param page
    */
-  onChangePageSize(page) {
+  private onChangePageSize(page) {
     // 改变的条目数
     const pageSize = parseInt(page.options[page.selectedIndex].value, 10);
 

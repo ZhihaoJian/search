@@ -31,7 +31,7 @@ export class TableService {
    * @param direction 点击方向
    * @param curPageNum 当前页码
    * @param totalPage 总页数
-   * @param currentPageDOM 当前页码DOM结点 
+   * @param currentPageDOM 当前页码DOM结点
    */
   canChangeIndex(direction: string, curPageNum: number, totalPage: number, currentPageDOM: ElementRef): boolean {
 

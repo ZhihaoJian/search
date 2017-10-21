@@ -70,7 +70,14 @@ export class FormComponent implements OnInit, AfterViewInit {
 
 
     } else if (location.pathname === '/currentFile') {
-
+      this.cfs.updateGrid('/terminal/currentFileController/loadDataForTableHeader',
+        tableName, cataId,
+        1,
+        10,
+        value.keyword)
+        .then(res => {
+          this.pagerInfo.emit(res);
+        })
     } else {
 
     }

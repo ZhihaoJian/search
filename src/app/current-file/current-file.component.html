@@ -2,9 +2,9 @@
 <section>
   <div class="ui container">
     <div id="currentFileService">
-      <app-form></app-form>
+      <app-form [selection]="selection" (pagerInfo)="onGetPagerInfo($event)"></app-form>
 
-      <app-table></app-table>
+      <app-table [gridContentArray]="gridContentArray" [pagerInfo]="pagerInfo"></app-table>
     </div>
     <!--现行文件服务 end-->
   </div>

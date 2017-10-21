@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { AUTH } from './mockData';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 
 
@@ -8,21 +7,30 @@ declare var $: any;
 @Injectable()
 export class CurrentFileServiceService {
 
-  private auth: AUTH;
   private IP = 'http://192.168.88.2:7070';
 
   constructor(private http: HttpClient) {
   }
 
   // 初始化加载，默认加载 开放档案服务的数据
-  public initLoading(requestUrl: string) {
+  public initLoading(requestUrl: string, params: object) {
     const url = this.IP + requestUrl;
+    let requestParams = new HttpParams();
+
+    // 根据传入的参数构造动态请求参数列表
+    for (const param in params) {
+      if (params.hasOwnProperty(param)) {
+        requestParams = requestParams.set(param.toString(), params[param]);
+      }
+    }
+
 
     // 查询开放档案的下拉框
     return new Promise((resolve, reject) => {
       this.http.post(url, null, {
-        params: new HttpParams()
-          .set('classifyType', 'FILINGFILE,FILECOMPILING,VOLUMES,ARCHIVES')
+        params: requestParams
+        // params: new HttpParams()
+        //   .set('classifyType', 'FILINGFILE,FILECOMPILING,VOLUMES,ARCHIVES')
       })
         .subscribe(metaData => {
 

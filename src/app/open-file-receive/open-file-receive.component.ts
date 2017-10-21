@@ -28,7 +28,11 @@ export class OpenFileReceiveComponent implements OnInit {
 
   // 首次加载从服务器获取 开放档案服务的数据，期间用遮罩显示‘加载中...’，加载完毕去除遮罩
   private getSelectionValue() {
-    this.cfs.initLoading('/terminal/openArchivesController/getCatalogueTree')
+    this.cfs.initLoading(
+      '/terminal/openArchivesController/getCatalogueTree',
+      {
+        'classifyType': 'FILINGFILE,FILECOMPILING,VOLUMES,ARCHIVES'
+      })
       .then(res => {
         this.sperateData(res);
         return res;
