@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { CurrentFileServiceService } from '../service/currentFile/current-file-service.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 declare var $: any;
 
 @Component({
@@ -36,7 +36,7 @@ export class FormComponent implements OnInit, AfterViewInit {
 
 
 
-  constructor(public fb: FormBuilder, public ar: ActivatedRoute, public cfs: CurrentFileServiceService) { }
+  constructor(public fb: FormBuilder, public ar: ActivatedRoute, public cfs: CurrentFileServiceService, public router: Router) { }
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -56,7 +56,7 @@ export class FormComponent implements OnInit, AfterViewInit {
     let tableName, cataId;
     [tableName, cataId] = this.cfs.resolveParams(value.tableNameAndCataId);
 
-    if (location.pathname === '/openFile') {
+    if (location.hash === '#/openFile') {
 
       this.cfs.updateGrid('/terminal/openArchivesController/loadDataForTableHeader',
         tableName, cataId,
@@ -69,7 +69,7 @@ export class FormComponent implements OnInit, AfterViewInit {
         })
 
 
-    } else if (location.pathname === '/currentFile') {
+    } else if (location.hash === '#/currentFile') {
       this.cfs.updateGrid('/terminal/currentFileController/loadDataForTableHeader',
         tableName, cataId,
         1,
@@ -78,8 +78,6 @@ export class FormComponent implements OnInit, AfterViewInit {
         .then(res => {
           this.pagerInfo.emit(res);
         })
-    } else {
-
     }
   }
 

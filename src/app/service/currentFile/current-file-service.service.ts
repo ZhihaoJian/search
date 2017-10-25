@@ -7,7 +7,7 @@ declare var $: any;
 @Injectable()
 export class CurrentFileServiceService {
 
-  private IP = 'http://192.168.88.2:7070';
+  private IP = 'http://192.168.88.2:8080';
 
   constructor(private http: HttpClient) {
   }
@@ -29,8 +29,6 @@ export class CurrentFileServiceService {
     return new Promise((resolve, reject) => {
       this.http.post(url, null, {
         params: requestParams
-        // params: new HttpParams()
-        //   .set('classifyType', 'FILINGFILE,FILECOMPILING,VOLUMES,ARCHIVES')
       })
         .subscribe(metaData => {
 
@@ -58,7 +56,14 @@ export class CurrentFileServiceService {
    * @param tableName 表名（英文）
    * @param catalogueId 请求ID
    */
-  public getFirstSelectionGrid(url: string, tableName: string, catalogueId: string, pageNum?: number, pageSize?: number, keyword?: string) {
+  public getFirstSelectionGrid(
+    url: string,
+    tableName: string,
+    catalogueId: string,
+    pageNum?: number,
+    pageSize?: number,
+    keyword?: string,
+    dbName?: string) {
 
     this.enableLoading();
     const tableNameArray = {};
@@ -73,7 +78,7 @@ export class CurrentFileServiceService {
           return tableNameArray;
         })
         .then(res => {
-          this.getDataFromDb(tableName, url, catalogueId, tableNameArray, (res as any).en, pageNum, pageSize, keyword)
+          this.getDataFromDb(tableName, url, catalogueId, tableNameArray, (res as any).en, pageNum, pageSize, keyword, dbName)
             .then(response => {
               console.log(response)
               resolve(response);
@@ -95,9 +100,10 @@ export class CurrentFileServiceService {
     tableNameEns: Array<string>,
     pageNum?: number,
     pageSize?: number,
-    keyword?: string) {
+    keyword?: string,
+    dataBaseName?: string) {
 
-    const dbName = 'eddc_open.';
+    const dbName = dataBaseName ? dataBaseName : 'eddc_open.';
     const requestUrl = this.IP + url;
 
     if (!pageNum) {
@@ -171,6 +177,8 @@ export class CurrentFileServiceService {
 
 
   /**
+   * 若config对象中有自定义的colModel，则覆盖默认的colModel
+   *
    * 生成表格
    * @param data 元数据
    */
@@ -178,8 +186,12 @@ export class CurrentFileServiceService {
 
     if (data) {
       // const headers = this.generateTableHeaders(data);
-      const colModel = this.generateColModel(enNames);
-      this.generateGrid(data, colModel, chNames, config);
+      if (config && config.hasOwnProperty('colModel')) {
+        this.generateGrid(data, [], chNames, config);
+      } else {
+        const colModel = this.generateColModel(enNames);
+        this.generateGrid(data, colModel, chNames, config);
+      }
     }
   }
 
@@ -225,18 +237,31 @@ export class CurrentFileServiceService {
    * @param data 服务器回传数据
    * @param colModal 列配置
    * @param header 中文表头
-   * @param config 自定义配置项
+   * @param config 可选自定义配置项
    */
   private generateGrid(data: any, colModel: any, header: Array<string>, config?: object) {
-    $('#jqGrid').jqGrid({
+
+    let gridID = '#jqGrid';
+
+    if (config && config.hasOwnProperty('gridID')) {
+      gridID = config['gridID'];
+
+      if (gridID[0] !== '#') {
+        gridID = '#' + gridID;
+      }
+    }
+
+
+
+    $(gridID).jqGrid({
       datatype: 'local',
-      colModel: colModel,
+      colModel: !!config && config.hasOwnProperty('colModel') ? config['colModel'] : colModel,
       localReader: {
         root: () => {
           return data.results || [];
         },
         id: () => {
-          if (config && config.hasOwnProperty('id')) {
+          if (config && !config.hasOwnProperty('colModel') && config.hasOwnProperty('id')) {
             return config['id'];
           }
           return 'f_id';
@@ -244,17 +269,18 @@ export class CurrentFileServiceService {
       },
       colNames: header,
       mtype: 'POST',
-      multiselect: true,
-      responsive: true,
-      rowNum: 20,
-      rowList: [10, 20, 30],
+      pager: config && config['pager'] ? config['pager'] : '',
+      multiselect: !!config && config.hasOwnProperty('multiselect') ? config['multiselect'] : true,
+      // responsive: true,
+      // rowNum: 20,
+      // rowList: [10, 20, 30],
       scroll: true,
-      height: 550,
+      height: !!config && config.hasOwnProperty('height') ? config['height'] : 650,
       styleUI: 'jQueryUI',
       rowTotal: data.total,
       viewrecords: true,
       cellLayout: 15,
-      scrollPopUp: true,
+      // scrollPopUp: true,
       pgbuttons: true,
       prmNames: {
         page: 'pageNum',
@@ -330,7 +356,7 @@ export class CurrentFileServiceService {
    * @param pageNum 第几页
    * @param pageSize 每页请求大小
    */
-  public updateGrid(url: string, tableName: string, cataId: string, pageNum: any, pageSize: any, keyWord?: string) {
+  public updateGrid(url: string, tableName: string, cataId: string, pageNum: any, pageSize: any, keyWord?: string, dataBaseName?: string) {
 
     let resultsLength, totalRecord, currentPage, totalPage;
 

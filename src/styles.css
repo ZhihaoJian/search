@@ -2,12 +2,20 @@
 
 @import '../node_modules/jqgrid/css/ui.jqgrid.css';
 section {
-    padding-top: 100px;
+    padding-top: 200px;
 }
 
 body {
     background: #f4f4f4 !important;
 }
+
+
+/* 自定义container宽度 */
+
+
+/* .custom-container-width {
+    width: 1400px !important;
+} */
 
 .color-red {
     color: red !important;
@@ -24,6 +32,11 @@ body {
     overflow: hidden;
 }
 
+#modal-jqGrid-pager,
+#gbox_modal-jqGrid,
+#gview_modal-jqGrid,
+.ui-jqgrid-hdiv,
+#gview_modal-jqGrid>div.ui-jqgrid-bdiv,
 #gview_jqGird>div.ui-jqgrid-bdiv,
 #pager,
 #gview_jqGrid,
@@ -32,12 +45,13 @@ body {
     width: 100% !important;
 }
 
+#modal-jqGrid>tbody tr td,
 #jqGrid>tbody tr td {
     font-size: 1rem;
 }
 
 table.ui-jqgrid-htable>thead tr {
-    background: #278bd8;
+    background: #277dff;
     color: #fff;
 }
 
@@ -45,6 +59,12 @@ tr.ui-jqgrid-labels {
     height: 40px;
 }
 
+#modal-jqGrid>tbody tr.jqgrow.ui-row-ltr.ui-widget-content,
 #jqGrid>tbody tr.jqgrow.ui-row-ltr.ui-widget-content {
     height: 40px;
+}
+
+tr.ui-jqgrid-labels th {
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
 }

@@ -119,7 +119,8 @@ export class TableComponent implements OnInit, AfterViewInit {
         [this.resultsLength, this.totalRecord, this.currentPage.nativeElement.value, this.totalPage, data, ch, en] = (res as any);
 
         // tslint:disable-next-line:max-line-length
-        [this.currentStartIndex, this.resultsLength] = this.tbs.changePageIndex(data.pageNum, data.totalPage, data.results.length, data.totalRecord);
+        // tslint:disable-next-line:triple-equals
+        [this.currentStartIndex, this.resultsLength] = this.tbs.changePageIndex(data.pageNum, data.totalPage, data.results == undefined ? 0 : data.results.length, data.totalRecord);
 
         this.cfs.createGrid(data, ch, en);
       })

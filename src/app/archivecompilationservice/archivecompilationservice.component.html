@@ -1,7 +1,8 @@
 <!-- 编研服务 start -->
 <section>
-  <div class="ui container">
-    <button type="button" class="ui button blue tiny" (click)="onCheckArchiveFile()">查看编研文件</button>
+  <div class="ui container custom-container-width">
+    <!-- <img src="../../assets/newnewnewTeminal/checkFile.png" style="width:120px;" (click)="onCheckArchiveFile()" alt="" srcset=""> -->
+    <button type="button" (click)="onCheckArchiveFile()" class="ui button  medium">查看编研文件</button>
     <div style="margin-top:2rem">
       <app-table [gridContentArray]="gridContentArray" [pagerInfo]="pagerInfo"></app-table>
     </div>
@@ -16,6 +17,7 @@
     错误</div>
   <div class="content">
     <p>{{errorMsg}}</p>
+
   </div>
   <div class="actions">
     <div class="ui green ok inverted button">
@@ -33,7 +35,12 @@
       <div class="title active">
         <i class="dropdown icon"></i> 显示列表 </div>
       <div class="content">
-        <app-table></app-table>
+        <!-- <app-table id="modal-grid"></app-table> -->
+        <table id="modal-jqGrid">
+
+        </table>
+        <div id="modal-jqGrid-pager"></div>
+
       </div>
     </div>
 
@@ -43,16 +50,24 @@
           <label for="title">
             <i class="red">*</i>编研标题
           </label>
-          <input type="text" disabled value="组织沿革编研文件任务0001" id="title">
+          <input type="text" disabled value="组织沿革编研文件任务0001" id="title" #title>
         </div>
         <div class="field">
           <label for="time" class="three wide">
             <i class="red">*</i>编研时间
           </label>
-          <input type="text" disabled value="2017-10-19" id="time">
+          <input type="text" disabled value="2017-10-19" id="time" #time>
         </div>
       </div>
     </form>
-
+    <ueditor [config]="{
+      toolbars: [['print','fullscreen']],
+      autoClearinitialContent: true,
+      elementPathEnabled: false,
+      initialFrameWidth:910,
+      initialFrameHeight:360,
+      readonly:false,
+      autoSyncData:false
+    }" [loadingTip]="'加载中……'" #ueditor></ueditor>
   </div>
 </div>
