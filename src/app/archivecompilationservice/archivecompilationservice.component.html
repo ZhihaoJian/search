@@ -27,7 +27,7 @@
 </div>
 
 <!-- 查看编研文件 -->
-<div class="ui modal" id="check-file-modal">
+<div class="ui modal check-file-modal" id="check-file-modal">
   <div class="header">查看</div>
   <div class="scrolling content">
 
@@ -50,25 +50,16 @@
           <label for="title">
             <i class="red">*</i>编研标题
           </label>
-          <input type="text" disabled value="组织沿革编研文件任务0001" id="title" #title>
+          <input type="text" disabled id="title" #title>
         </div>
         <div class="field">
           <label for="time" class="three wide">
             <i class="red">*</i>编研时间
           </label>
-          <input type="text" disabled value="2017-10-19" id="time" #time>
+          <input type="text" disabled id="time" #time>
         </div>
       </div>
     </form>
-    <!-- <ueditor [config]="{
-      toolbars: [['print','fullscreen']],
-      autoClearinitialContent: true,
-      elementPathEnabled: false,
-      initialFrameWidth:910,
-      initialFrameHeight:360,
-      readonly:false,
-      autoSyncData:false
-    }" [loadingTip]="'加载中……'" #ueditor></ueditor> -->
 
     <textarea id="container" #container></textarea>
 

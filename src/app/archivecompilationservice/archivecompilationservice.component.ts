@@ -2,7 +2,6 @@ import { Component, OnInit, HostBinding, Output, ViewChild, ElementRef } from '@
 import { slideInOutAnimation } from '../animation/animation';
 import { CurrentFileServiceService } from '../service/currentFile/current-file-service.service';
 import { TableService } from '../service/tableService/table.service';
-import { UEditorComponent } from 'ngx-ueditor';
 declare var $: any;
 declare var UE: any;
 
@@ -23,7 +22,6 @@ export class ArchivecompilationserviceComponent implements OnInit {
   public ue;  // Ueditor
   @ViewChild('title') title: ElementRef;
   @ViewChild('time') time: ElementRef;
-  @ViewChild('ueditor') ueditor: UEditorComponent;
   @ViewChild('container') container: ElementRef;
   @HostBinding('@routeAnimation') routeAnimation = true;
   @HostBinding('style.display') display = 'block';
@@ -82,8 +80,10 @@ export class ArchivecompilationserviceComponent implements OnInit {
       $('#error-modal').modal('show');
     } else {
 
+
       let archiveCompilationId, currentTaskId, processId;
       [archiveCompilationId, currentTaskId, processId] = this.tbs.getCustomCheckboxId(hasCheckedBoxArray[0]);
+
 
       this.reuestUeditorContent(archiveCompilationId);
       this.requestGridInModal(archiveCompilationId, processId);
@@ -164,8 +164,15 @@ export class ArchivecompilationserviceComponent implements OnInit {
 
       const response = (res as any).obj;
 
-      that.time.nativeElement.value = response.time;
-      that.title.nativeElement.value = response.name;
+      // 只保留一个Ueditor实例
+      this.justifyUeditorNode();
+
+      // 此处使用jQuery进行DOM操作，
+      // 若使用Angular的ElementRef进行操作，在组件切换后会出现表单值插入不正确的情况
+      $('#time').val(response.time);
+      $('#title').val(response.name);
+      // that.time.nativeElement.defaultValue = response.time;
+      // that.title.nativeElement.defaultValue = response.name;
 
       // 延迟500ms后才对Ueditor插入内容,小于250ms则会初始渲染内容失败
       setTimeout(function () {
@@ -201,9 +208,26 @@ export class ArchivecompilationserviceComponent implements OnInit {
       autoSyncData: false
     };
 
+    if (window.innerHeight <= 768) {
+      config['initialFrameWidth'] = 850;
+    }
     // this.ue = UE.getEditor(this.container.nativeElement.id, config);
-    // UE.delEditor(this.container.nativeElement.id);
+    UE.delEditor(this.container.nativeElement.id);
     this.ue = new UE.ui.Editor(config);
     this.ue.render(this.container.nativeElement.id);
+  }
+
+  /**
+   * 修正Ueditor在HTML中生成的多个Ueditor实例
+   */
+  justifyUeditorNode() {
+    if ($('div.check-file-modal').length > 1) {
+
+      const childNode = $('div.check-file-modal')[1];
+      const parentNode = childNode.parentNode;
+
+      parentNode.removeChild(childNode);
+
+    }
   }
 }

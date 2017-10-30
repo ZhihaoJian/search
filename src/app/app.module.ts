@@ -16,7 +16,6 @@ import { TableComponent } from './table/table.component';
 import { CoverComponent } from './cover/cover.component';
 import { CurrentFileServiceService } from './service/currentFile/current-file-service.service';
 
-import { UEditorModule } from 'ngx-ueditor';
 
 const routes: Routes = [
   { path: '', redirectTo: '/openFile', pathMatch: 'full' },
@@ -47,12 +46,6 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    UEditorModule.forRoot({
-      path: '../assets/ueditor/',
-      options: {
-        themePath: '/assets/ueditor/themes/'
-      }
-    })
   ],
   providers: [CurrentFileServiceService],
   bootstrap: [AppComponent]
