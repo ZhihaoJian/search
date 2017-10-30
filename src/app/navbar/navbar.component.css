@@ -39,3 +39,28 @@
     text-shadow: 5px 5px 5px #222222;
     font-weight: bold;
 }
+
+.logo-image {
+    width: 100px !important;
+}
+
+@media (max-height:768px) {
+    #navbar {
+        background: linear-gradient(45deg, rgba(25, 138, 255, 0), rgba(57, 121, 236, 0));
+        height: 100px;
+        border: none;
+        box-shadow: 0 0 0;
+    }
+    #logo-name {
+        font-size: 1.2rem;
+        margin-left: 5px;
+        color: #fff;
+        text-shadow: 5px 5px 5px #565656;
+    }
+    #link-container a img {
+        width: 50px;
+    }
+    .logo-image {
+        width: 50px !important;
+    }
+}

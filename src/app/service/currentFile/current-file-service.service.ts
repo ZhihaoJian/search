@@ -242,6 +242,7 @@ export class CurrentFileServiceService {
   private generateGrid(data: any, colModel: any, header: Array<string>, config?: object) {
 
     let gridID = '#jqGrid';
+    let height = 650;
 
     if (config && config.hasOwnProperty('gridID')) {
       gridID = config['gridID'];
@@ -251,6 +252,9 @@ export class CurrentFileServiceService {
       }
     }
 
+    if (window.innerHeight <= 768) {
+      height = 450;
+    }
 
 
     $(gridID).jqGrid({
@@ -275,7 +279,7 @@ export class CurrentFileServiceService {
       // rowNum: 20,
       // rowList: [10, 20, 30],
       scroll: true,
-      height: !!config && config.hasOwnProperty('height') ? config['height'] : 650,
+      height: !!config && config.hasOwnProperty('height') ? config['height'] : height,
       styleUI: 'jQueryUI',
       rowTotal: data.total,
       viewrecords: true,

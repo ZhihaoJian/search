@@ -4,6 +4,7 @@ import { CurrentFileServiceService } from '../service/currentFile/current-file-s
 import { TableService } from '../service/tableService/table.service';
 import { UEditorComponent } from 'ngx-ueditor';
 declare var $: any;
+declare var UE: any;
 
 @Component({
   selector: 'app-archivecompilationservice',
@@ -19,9 +20,11 @@ export class ArchivecompilationserviceComponent implements OnInit {
   chnames: Array<string>;
   ennames: Array<string>;
   public errorMsg;
+  public ue;  // Ueditor
   @ViewChild('title') title: ElementRef;
   @ViewChild('time') time: ElementRef;
   @ViewChild('ueditor') ueditor: UEditorComponent;
+  @ViewChild('container') container: ElementRef;
   @HostBinding('@routeAnimation') routeAnimation = true;
   @HostBinding('style.display') display = 'block';
   @HostBinding('style.position') position = 'absolute'
@@ -56,6 +59,8 @@ export class ArchivecompilationserviceComponent implements OnInit {
           trigger: '.title .icon'
         }
       });
+
+    this.initUeditor();
   }
 
   onGetPagerInfo(info: any) {
@@ -80,8 +85,8 @@ export class ArchivecompilationserviceComponent implements OnInit {
       let archiveCompilationId, currentTaskId, processId;
       [archiveCompilationId, currentTaskId, processId] = this.tbs.getCustomCheckboxId(hasCheckedBoxArray[0]);
 
-      this.requestGridInModal(archiveCompilationId, processId);
       this.reuestUeditorContent(archiveCompilationId);
+      this.requestGridInModal(archiveCompilationId, processId);
     }
   }
 
@@ -91,6 +96,9 @@ export class ArchivecompilationserviceComponent implements OnInit {
    * @param processId
    */
   requestGridInModal(archiveCompilationId: string, processId: string) {
+
+    const that = this;
+
     this.cfs.initLoading(
       '/terminal/archiveCompilationController/getAuditTaskById',
       {
@@ -122,13 +130,18 @@ export class ArchivecompilationserviceComponent implements OnInit {
             tableNameEns,
             {
               gridID: 'modal-jqGrid',
-              height: 300,
               pager: 'modal-jqGrid-pager'
             }
           )
-        }).catch(err => {
-          console.log(err);
         })
+          // tslint:disable-next-line:no-shadowed-variable
+          .then(res => {
+            $('#check-file-modal')
+              .modal('show');
+
+          }).catch(err => {
+            console.log(err);
+          })
       }).catch(err => {
         console.log(err);
       })
@@ -139,6 +152,9 @@ export class ArchivecompilationserviceComponent implements OnInit {
    * @param archiveCompilationId
    */
   reuestUeditorContent(archiveCompilationId: string) {
+
+    const that = this;
+
     this.cfs.initLoading(
       '/terminal/archiveCompilationController/findById',
       {
@@ -148,12 +164,15 @@ export class ArchivecompilationserviceComponent implements OnInit {
 
       const response = (res as any).obj;
 
-      this.time.nativeElement.value = response.time;
-      this.title.nativeElement.value = response.name;
+      that.time.nativeElement.value = response.time;
+      that.title.nativeElement.value = response.name;
 
-      this.ueditor.Instance.setContent(response.compContent);
+      // 延迟500ms后才对Ueditor插入内容,小于250ms则会初始渲染内容失败
+      setTimeout(function () {
+        that.ue.setContent(response.compContent);
+      }, 500);
 
-      $('#check-file-modal').modal('show');
+
     }).catch(err => {
       console.log(err);
     })
@@ -167,4 +186,24 @@ export class ArchivecompilationserviceComponent implements OnInit {
     return [res.tableName, res.dataIds, res.tableNameChs, res.tableNameEns];
   }
 
+
+  /**
+   * 初始化ueditor
+   */
+  initUeditor() {
+    const config = {
+      toolbars: [['print', 'fullscreen']],
+      autoClearinitialContent: true,
+      elementPathEnabled: false,
+      initialFrameWidth: 910,
+      initialFrameHeight: 360,
+      readonly: false,
+      autoSyncData: false
+    };
+
+    // this.ue = UE.getEditor(this.container.nativeElement.id, config);
+    // UE.delEditor(this.container.nativeElement.id);
+    this.ue = new UE.ui.Editor(config);
+    this.ue.render(this.container.nativeElement.id);
+  }
 }

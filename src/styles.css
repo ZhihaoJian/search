@@ -5,6 +5,12 @@ section {
     padding-top: 200px;
 }
 
+@media (max-height:768px) {
+    section {
+        padding-top: 110px;
+    }
+}
+
 body {
     background: #f4f4f4 !important;
 }

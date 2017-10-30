@@ -36,7 +36,7 @@
         <i class="dropdown icon"></i> 显示列表 </div>
       <div class="content">
         <!-- <app-table id="modal-grid"></app-table> -->
-        <table id="modal-jqGrid">
+        <table id="modal-jqGrid" class="jqGrid">
 
         </table>
         <div id="modal-jqGrid-pager"></div>
@@ -60,7 +60,7 @@
         </div>
       </div>
     </form>
-    <ueditor [config]="{
+    <!-- <ueditor [config]="{
       toolbars: [['print','fullscreen']],
       autoClearinitialContent: true,
       elementPathEnabled: false,
@@ -68,6 +68,9 @@
       initialFrameHeight:360,
       readonly:false,
       autoSyncData:false
-    }" [loadingTip]="'加载中……'" #ueditor></ueditor>
+    }" [loadingTip]="'加载中……'" #ueditor></ueditor> -->
+
+    <textarea id="container" #container></textarea>
+
   </div>
 </div>

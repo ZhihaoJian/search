@@ -53,6 +53,9 @@ export class FormComponent implements OnInit, AfterViewInit {
   onSubmit(value: any) {
     console.log(value);
 
+    this.form.get('keyword').setValue('');
+
+
     let tableName, cataId;
     [tableName, cataId] = this.cfs.resolveParams(value.tableNameAndCataId);
 

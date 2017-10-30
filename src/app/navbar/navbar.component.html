@@ -3,7 +3,7 @@
   <div class="ui menu fixed pointing " id="navbar">
     <div class="ui container fluid">
       <a [routerLink]="['/openFile']" class="header item">
-        <img src="../../assets/img/2.ico" style="width:100px" class="image" alt="" srcset="">
+        <img src="../../assets/img/2.ico" class="logo-image" alt="" srcset="">
         <span id="logo-name"> 澄海区档案局电子文档数据中心
           <span style="margin-left:1rem">查询终端</span>
         </span>
@@ -11,8 +11,8 @@
 
       <div #linkContainer id="link-container">
 
-        <a [routerLink]="['/openFile']" data-index='0' class="item" [ngClass]="{active:openFile.dataset['index']===linkIndex }"
-          (click)="onChangeForcus(openFile.dataset['index'])" #openFile>
+        <a [routerLink]="['/openFile']" data-index='0' class="item" [ngClass]="{active:openFile.dataset['index']===linkIndex }" (click)="onChangeForcus(openFile.dataset['index'])"
+          #openFile>
           <img *ngIf="openFile.dataset['index']!==linkIndex;else openFileChecked" src="../../assets/newnewnewTeminal/openFile.png"
             alt="" srcset="">
           <ng-template #openFileChecked>
