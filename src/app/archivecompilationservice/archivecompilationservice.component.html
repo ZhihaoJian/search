@@ -11,7 +11,7 @@
 <!-- 编研服务 end -->
 
 <!-- 错误提示 -->
-<div class="ui basic modal" id="error-modal">
+<!-- <div class="ui basic modal" id="error-modal">
   <div class="header" style="color:red">
     <i class="large disabled warning sign icon"></i>
     错误</div>
@@ -24,7 +24,9 @@
       确定
     </div>
   </div>
-</div>
+</div> -->
+
+<app-error-modal [errorMsg]="errorMsg"></app-error-modal>
 
 <!-- 查看编研文件 -->
 <div class="ui modal check-file-modal" id="check-file-modal">
@@ -32,7 +34,7 @@
   <div class="scrolling content">
 
     <div class="ui styled fluid accordion">
-      <div class="title active">
+      <div class="title">
         <i class="dropdown icon"></i> 显示列表 </div>
       <div class="content">
         <!-- <app-table id="modal-grid"></app-table> -->

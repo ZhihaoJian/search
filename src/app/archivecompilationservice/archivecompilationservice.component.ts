@@ -18,7 +18,12 @@ export class ArchivecompilationserviceComponent implements OnInit {
   pagerInfo;
   chnames: Array<string>;
   ennames: Array<string>;
-  public errorMsg;
+
+  // 辅助计数。
+  // 因为子组件 @Input 的 setter 属性只有监听到输入值发生变化才执行事件，因此使用辅助计数欺瞒 @Input 的setter属性值检测
+  count = 0;
+
+  public errorMsg: object;
   public ue;  // Ueditor
   @ViewChild('title') title: ElementRef;
   @ViewChild('time') time: ElementRef;
@@ -52,11 +57,7 @@ export class ArchivecompilationserviceComponent implements OnInit {
     });
 
     $('.ui.accordion')
-      .accordion({
-        selector: {
-          trigger: '.title .icon'
-        }
-      });
+      .accordion();
 
     this.initUeditor();
   }
@@ -72,12 +73,14 @@ export class ArchivecompilationserviceComponent implements OnInit {
     const checkedBox = $('#jqGrid > tbody tr.jqgrow > td > input');
     const hasCheckedBoxArray = this.tbs.getInputBoxChecked(checkedBox);
 
+    this.errorMsg = {
+      count: this.count++
+    };
+
     if (hasCheckedBoxArray.length === 0) {
-      this.errorMsg = '请勾选内容！';
-      $('#error-modal').modal('show');
+      (this.errorMsg as any).errorMsg = '请勾选内容！';
     } else if (hasCheckedBoxArray.length > 1) {
-      this.errorMsg = '只能选择一条目录查看！';
-      $('#error-modal').modal('show');
+      (this.errorMsg as any).errorMsg = '只能选择一条目录查看！';
     } else {
 
 

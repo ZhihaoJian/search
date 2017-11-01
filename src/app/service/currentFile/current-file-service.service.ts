@@ -374,9 +374,22 @@ export class CurrentFileServiceService {
         keyWord).then(res => {
           $.jgrid.gridUnload('jqGrid');
 
-          const data = (res as any).data.obj.list;
-          const ch = (res as any).ch;
-          const en = (res as any).en;
+          const response = (res as any);
+
+          if (response.data.obj == null) {
+
+            resultsLength = 0;
+            totalRecord = 0;
+            currentPage = 0;
+            totalPage = 0;
+            resolve([resultsLength, totalRecord, currentPage, totalPage, {}, [], []]);
+
+            return
+          }
+
+          const data = response.data.obj == null ? [] : (res as any).data.obj.list;
+          const ch = response.ch;
+          const en = response.en;
 
           // tslint:disable-next-line:triple-equals
           resultsLength = data.results == undefined ? 0 : data.results.length;

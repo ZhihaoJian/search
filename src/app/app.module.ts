@@ -15,6 +15,7 @@ import { FormComponent } from './form/form.component';
 import { TableComponent } from './table/table.component';
 import { CoverComponent } from './cover/cover.component';
 import { CurrentFileServiceService } from './service/currentFile/current-file-service.service';
+import { ErrorModalComponent } from './modal/error-modal/error-modal.component';
 
 
 const routes: Routes = [
@@ -37,7 +38,8 @@ const routes: Routes = [
     RatingModalComponent,
     FormComponent,
     TableComponent,
-    CoverComponent
+    CoverComponent,
+    ErrorModalComponent
   ],
   imports: [
     BrowserModule,

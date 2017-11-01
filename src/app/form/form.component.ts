@@ -11,8 +11,9 @@ declare var $: any;
 })
 export class FormComponent implements OnInit, AfterViewInit {
 
+  @Output() errorMsg = new EventEmitter();
   form: FormGroup;
-  public options;
+  options;
 
   @Input()
   set selection(selection: any) {
@@ -53,8 +54,6 @@ export class FormComponent implements OnInit, AfterViewInit {
   onSubmit(value: any) {
     console.log(value);
 
-    this.form.get('keyword').setValue('');
-
 
     let tableName, cataId;
     [tableName, cataId] = this.cfs.resolveParams(value.tableNameAndCataId);
@@ -87,6 +86,7 @@ export class FormComponent implements OnInit, AfterViewInit {
   onChange(selection: any) {
 
     const params = selection.options[selection.options.selectedIndex].id;
+    const classifyName = selection.options[selection.options['selectedIndex']].innerText; // 门类名称
     let tableName, cataId;
     [tableName, cataId] = this.cfs.resolveParams(params);
 
@@ -95,6 +95,11 @@ export class FormComponent implements OnInit, AfterViewInit {
     this.cfs.updateGrid('/terminal/openArchivesController/loadDataForTableHeader', tableName, cataId, '1', '10')
       .then(res => {
         [resultsLength, totalRecord, currentPage, totalPage, data, ch, en] = (res as any);
+
+        if (ch.length === 0 && en.length === 0) {
+          this.errorMsg.emit(`该门类 [ ${classifyName} ] 结构未正确设置，请联系管理员`);
+        }
+
         this.pagerInfo.emit([resultsLength, totalRecord, currentPage, totalPage]);
         this.cfs.createGrid(data, ch, en)
       })
