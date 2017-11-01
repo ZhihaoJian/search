@@ -2,12 +2,19 @@
 
 @import '../node_modules/jqgrid/css/ui.jqgrid.css';
 section {
-    padding-top: 16%;
+    padding-top: 2%;
 }
 
 @media (max-height:768px) {
     section {
-        padding-top: 110px;
+        padding-top: .5%;
+    }
+}
+
+@media (max-width:768px) {
+    section {
+        padding-top: 1%;
+        width: 100vw;
     }
 }
 

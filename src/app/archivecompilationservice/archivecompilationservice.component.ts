@@ -16,8 +16,8 @@ export class ArchivecompilationserviceComponent implements OnInit {
 
   @Output() gridContentArray;
   pagerInfo;
-  chnames: Array<string>;
-  ennames: Array<string>;
+  chnames: Array<string> = ['', '编研名', '编研日期', '编研内容', '编研人', '审核人', '审核状态', '退回原因'];
+  ennames: Array<string> = ['', 'name', 'time', 'compContent', 'compUser', 'shenheUser', 'shenheStatu', 'returnRemark'];
 
   // 辅助计数。
   // 因为子组件 @Input 的 setter 属性只有监听到输入值发生变化才执行事件，因此使用辅助计数欺瞒 @Input 的setter属性值检测
@@ -42,13 +42,11 @@ export class ArchivecompilationserviceComponent implements OnInit {
     ).then(res => {
       console.log(res);
 
-      const chnames = ['', '编研名', '编研日期', '编研内容', '编研人', '审核人', '审核状态', '退回原因'];
-      const ennames = ['', 'name', 'time', 'compContent', 'compUser', 'shenheUser', 'shenheStatu', 'returnRemark'];
-      const customModel = this.tbs.getArchiveCompilationCustomModel(ennames);
+      const customModel = this.tbs.getArchiveCompilationCustomModel(this.ennames);
 
       this.gridContentArray = {};
-      this.gridContentArray['chnames'] = chnames;
-      this.gridContentArray['ennames'] = ennames;
+      this.gridContentArray['chnames'] = this.chnames;
+      this.gridContentArray['ennames'] = this.ennames;
       this.gridContentArray['data'] = (res as any).obj.list;
       this.gridContentArray['config'] = {
         multiselect: false,
@@ -232,5 +230,33 @@ export class ArchivecompilationserviceComponent implements OnInit {
       parentNode.removeChild(childNode);
 
     }
+  }
+
+  /**
+   * 关键字搜索
+   * @param keyWord
+   */
+  search(keyWord: string) {
+    this.cfs.initLoading(
+      '/terminal/openArchivesController/loadDataForTableHeader/',
+      {
+        tableName: 'eddc_formal.zhyw_archive_compilation',
+        keyWord: keyWord,
+        tableHeaders: 'archive_compilation_id,f_name,f_time,f_comp_content,f_comp_user,f_process_id,f_shenhe_user,f_shenhe_statu,f_return_remark,f_add_user,f_add_time,f_update_user,f_update_time',
+        pageNum: 1,
+        pageSize: 10
+      }
+    ).then(res => {
+      const customModel = this.tbs.getArchiveCompilationCustomModel(this.ennames);
+
+      this.gridContentArray = {};
+      this.gridContentArray['chnames'] = this.chnames;
+      this.gridContentArray['ennames'] = this.ennames;
+      this.gridContentArray['data'] = (res as any).obj.list;
+      this.gridContentArray['config'] = {
+        multiselect: false,
+        colModel: customModel
+      }
+    })
   }
 }

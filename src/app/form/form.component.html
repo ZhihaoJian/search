@@ -1,6 +1,6 @@
 <form class="ui form" [formGroup]="form" novalidate (ngSubmit)="onSubmit(form.value)">
   <div class="inline fields">
-    <div class="three wide field">
+    <div class="field">
       <select formControlName='tableNameAndCataId' class="ui" id="catalogueSelection" #catalogueSelection (change)="onChange($event.target)">
         <option *ngFor="let option of options;" value="catalogueId={{option.id}}&tableName={{option.other}}" data-id="catalogueId={{option.id}}&tableName={{option.other}}">{{option.name}}</option>
       </select>
@@ -8,7 +8,7 @@
     <div class="field eleven wide">
       <input type="text" placeholder="输入查询信息" formControlName="keyword">
     </div>
-    <div class="field">
+    <div class="field two wide">
       <button class="ui button" type="submit">检索</button>
     </div>
   </div>

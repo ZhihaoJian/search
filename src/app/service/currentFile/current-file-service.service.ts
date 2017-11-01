@@ -242,7 +242,7 @@ export class CurrentFileServiceService {
   private generateGrid(data: any, colModel: any, header: Array<string>, config?: object) {
 
     let gridID = '#jqGrid';
-    let height = 650;
+    let height = 500;
 
     if (config && config.hasOwnProperty('gridID')) {
       gridID = config['gridID'];
@@ -253,7 +253,7 @@ export class CurrentFileServiceService {
     }
 
     if (window.innerHeight <= 768) {
-      height = 450;
+      height = $('html').height() - 250;
     }
 
 

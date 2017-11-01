@@ -6,3 +6,8 @@
 #check-file-modal>div.scrolling>form {
     margin-top: 1rem;
 }
+
+#search-form {
+    display: inline-block;
+    float: right;
+}
