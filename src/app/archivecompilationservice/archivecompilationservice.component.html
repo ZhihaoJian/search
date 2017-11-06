@@ -2,16 +2,19 @@
 <section>
   <div class="ui container custom-container-width">
     <!-- <img src="../../assets/newnewnewTeminal/checkFile.png" style="width:120px;" (click)="onCheckArchiveFile()" alt="" srcset=""> -->
-    <button type="button" (click)="onCheckArchiveFile()" class="ui button  medium">查看编研文件</button>
-    <form class="ui form"  id="search-form">
-      <div class="inline field">
-        <input type="text" placeholder="输入检索内容" name="keyWord" #keyWord>
-        <button type="button" class="ui button" (click)="search(keyWord.value)">检索</button>
-      </div>
-    </form>
-    <div style="margin-top:2rem">
-      <app-table [gridContentArray]="gridContentArray" [pagerInfo]="pagerInfo"></app-table>
+    <div>
+      <form class="ui form" id="search-form">
+        <div class="inline fields">
+          <div class="thirteen wide field">
+            <input type="text" placeholder="输入检索内容" name="keyWord" #keyWord>
+          </div>
+          <button type="button" class="ui button" (click)="search(keyWord.value)">检索</button>
+          <button type="button" (click)="onCheckArchiveFile()" class="ui button  medium">查看编研文件</button>
+        </div>
+      </form>
     </div>
+
+    <app-table [gridContentArray]="gridContentArray" [pagerInfo]="pagerInfo"></app-table>
   </div>
 </section>
 <!-- 编研服务 end -->

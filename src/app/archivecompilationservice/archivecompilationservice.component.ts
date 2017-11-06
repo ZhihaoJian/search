@@ -41,17 +41,8 @@ export class ArchivecompilationserviceComponent implements OnInit {
       { 'shenheStatu': 'ALLOW' }
     ).then(res => {
       console.log(res);
-
       const customModel = this.tbs.getArchiveCompilationCustomModel(this.ennames);
-
-      this.gridContentArray = {};
-      this.gridContentArray['chnames'] = this.chnames;
-      this.gridContentArray['ennames'] = this.ennames;
-      this.gridContentArray['data'] = (res as any).obj.list;
-      this.gridContentArray['config'] = {
-        multiselect: false,
-        colModel: customModel
-      }
+      this.generateConfig(res, customModel);
     });
 
     $('.ui.accordion')
@@ -238,25 +229,40 @@ export class ArchivecompilationserviceComponent implements OnInit {
    */
   search(keyWord: string) {
     this.cfs.initLoading(
-      '/terminal/openArchivesController/loadDataForTableHeader/',
+      '/terminal/archiveCompilationController/searchArchiveCompilationByKey/',
       {
-        tableName: 'eddc_formal.zhyw_archive_compilation',
+        shenheStatu: 'ALLOW',
         keyWord: keyWord,
-        tableHeaders: 'archive_compilation_id,f_name,f_time,f_comp_content,f_comp_user,f_process_id,f_shenhe_user,f_shenhe_statu,f_return_remark,f_add_user,f_add_time,f_update_user,f_update_time',
-        pageNum: 1,
-        pageSize: 10
+        pagerNum: 1,
+        pagerSize: $('select[name="pageSize"]').val()
       }
     ).then(res => {
       const customModel = this.tbs.getArchiveCompilationCustomModel(this.ennames);
-
-      this.gridContentArray = {};
-      this.gridContentArray['chnames'] = this.chnames;
-      this.gridContentArray['ennames'] = this.ennames;
-      this.gridContentArray['data'] = (res as any).obj.list;
-      this.gridContentArray['config'] = {
-        multiselect: false,
-        colModel: customModel
-      }
+      this.generateConfig(res, customModel, keyWord);
     })
   }
+
+  /**
+   * 生成自定义配置
+   * @param res 请求响应
+   * @param customModel 自定义表格模型
+   */
+  generateConfig(res: any, customModel: any, keyWord?: string) {
+    this.gridContentArray = {};
+    this.gridContentArray['chnames'] = this.chnames;
+    this.gridContentArray['ennames'] = this.ennames;
+    this.gridContentArray['data'] = (res as any).obj.list;
+    this.gridContentArray['config'] = {
+      multiselect: false,
+      colModel: customModel,
+      requestURL: '/terminal/archiveCompilationController/searchArchiveCompilationByKey/',
+      requestParam: {
+        shenheStatu: 'ALLOW',
+        keyWord: keyWord
+      },
+      chnames: this.chnames,
+      ennames: this.ennames
+    }
+  }
+
 }

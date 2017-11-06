@@ -7,7 +7,7 @@ declare var $: any;
 @Injectable()
 export class CurrentFileServiceService {
 
-  private IP = 'http://192.168.88.2:8080';
+  private IP = 'http://192.168.88.2:7777';
 
   constructor(private http: HttpClient) {
   }
@@ -24,6 +24,7 @@ export class CurrentFileServiceService {
       }
     }
 
+    this.enableLoading();
 
     // 查询开放档案的下拉框
     return new Promise((resolve, reject) => {
@@ -246,10 +247,13 @@ export class CurrentFileServiceService {
 
     if (config && config.hasOwnProperty('gridID')) {
       gridID = config['gridID'];
+      $.jgrid.gridUnload(gridID);
 
       if (gridID[0] !== '#') {
         gridID = '#' + gridID;
       }
+    } else {
+      $.jgrid.gridUnload('jqGrid');
     }
 
     if (window.innerHeight <= 768) {
@@ -363,6 +367,8 @@ export class CurrentFileServiceService {
   public updateGrid(url: string, tableName: string, cataId: string, pageNum: any, pageSize: any, keyWord?: string, dataBaseName?: string) {
 
     let resultsLength, totalRecord, currentPage, totalPage;
+    this.enableLoading();
+
 
     return new Promise((resolve, reject) => {
       this.getFirstSelectionGrid(
@@ -397,6 +403,7 @@ export class CurrentFileServiceService {
           currentPage = data.pageNum;
           totalPage = data.totalPage;
 
+          this.disableLoading();
           resolve([resultsLength, totalRecord, currentPage, totalPage, data, ch, en]);
 
         })

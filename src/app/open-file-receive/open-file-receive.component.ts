@@ -61,7 +61,7 @@ export class OpenFileReceiveComponent implements OnInit {
         this.gridContentArray = {};
         this.gridContentArray['chnames'] = (res as any).ch;
         this.gridContentArray['ennames'] = (res as any).en;
-        this.gridContentArray['data'] = (res as any).data.obj.list;
+        this.gridContentArray['data'] = (res as any).data.obj.list
       })
   }
 
@@ -79,7 +79,7 @@ export class OpenFileReceiveComponent implements OnInit {
     this.selection = data.obj;
   }
 
-  private onGetErrorMsg(errorMsg: string) {
+  onGetErrorMsg(errorMsg: string) {
     console.log(errorMsg);
     this.errorMsg = { errorMsg: errorMsg, count: this.count++ };
   }

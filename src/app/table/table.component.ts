@@ -17,6 +17,7 @@ export class TableComponent implements OnInit, AfterViewInit {
   public gridArray = {};
   public currentStartIndex = 1;
   public previousPageSize = 10;
+  public config: object;
   @ViewChild('currentPage') currentPage: ElementRef;
   @ViewChild('pageSize') pageSize: ElementRef;
 
@@ -38,6 +39,11 @@ export class TableComponent implements OnInit, AfterViewInit {
       this.readyCreateGrid(gca);
 
       const newGCA = (gca as any);
+
+      // 添加组件的配置项
+      if (newGCA.hasOwnProperty('config')) {
+        this.config = newGCA['config'];
+      }
 
       this.cfs.createGrid(newGCA.data, newGCA.chnames, newGCA.ennames, newGCA.hasOwnProperty('config') ? newGCA['config'] : null);
     }
@@ -82,8 +88,15 @@ export class TableComponent implements OnInit, AfterViewInit {
     const canPost = this.changePageIndex(direction);
     if (canPost) {
       // 获取pageSize
-      const pageSize = this.pageSize.nativeElement.selectedOptions[0].value
-      this.getTableNameAndCataId(this.currentPage.nativeElement.value, pageSize);
+      const pageSize = this.pageSize.nativeElement.selectedOptions[0].value;
+
+      // 判断是开放档案（现行文件） 或者是档案编研
+      // 这里 开放档案和现行文件请求路径和HTML模板一样，只有档案编研究不一样
+      if (document.getElementById('catalogueSelection')) {
+        this.getTableNameAndCataId(this.currentPage.nativeElement.value, pageSize);
+      } else {
+        this.getArchiveCompilationData(this.currentPage.nativeElement.value, pageSize);
+      }
     }
   }
 
@@ -102,7 +115,7 @@ export class TableComponent implements OnInit, AfterViewInit {
   /**
    * 根据当前下拉框的选中项，获取tableName、cataId、pageSize然后请求分页
    */
-  public getTableNameAndCataId(pageNum?: number, pageSize?: number) {
+  public getTableNameAndCataId(pageNum: number, pageSize: number) {
 
     let tableName, cataId;
 
@@ -140,23 +153,67 @@ export class TableComponent implements OnInit, AfterViewInit {
     // 当前所在页页号
     const currentPageNum = parseInt(this.currentPage.nativeElement.value, 10);
 
-    if (currentPageNum === 1) {
-      this.getTableNameAndCataId(1, pageSize);
-      return;
-    }
+    // 判断是开放档案（现行文件） 或者是档案编研
+    // 这里 开放档案和现行文件请求路径和HTML模板一样，只有档案编研究不一样
+    if (document.getElementById('catalogueSelection')) {
+      if (currentPageNum === 1) {
+        this.getTableNameAndCataId(1, pageSize);
+        return;
+      }
 
-    if (pageSize > this.previousPageSize) {
-      resultNum = Math.floor((currentPageNum * this.previousPageSize + 1) / pageSize) + 1;
+      // 利用数学方法，求出分页后的准确页码
+      if (pageSize > this.previousPageSize) {
+        resultNum = Math.floor((currentPageNum * this.previousPageSize + 1) / pageSize) + 1;
+      } else {
+        resultNum = (currentPageNum * this.previousPageSize + 1) / pageSize - 1;
+      }
+
+
+      this.getTableNameAndCataId(resultNum, pageSize);
+
+      // 更新条目数
+      this.previousPageSize = pageSize;
     } else {
-      resultNum = (currentPageNum * this.previousPageSize + 1) / pageSize - 1;
+      this.getArchiveCompilationData(currentPageNum, pageSize);
     }
-
-
-    this.getTableNameAndCataId(resultNum, pageSize);
-
-    // 更新条目数
-    this.previousPageSize = pageSize;
   }
 
+
+  /**
+   * 获取档案编研分页数据
+   * @param currentPageNum 当前页码
+   * @param pageSize 待分页大小
+   */
+  getArchiveCompilationData(currentPageNum: any, pageSize: any) {
+    this.cfs.initLoading(
+      (this.config as any).requestURL,
+      {
+        shenheStatu: 'ALLOW',
+        pagerNum: currentPageNum,
+        keyWord: (this.config as any).requestParam.keyWord || '',
+        pagerSize: pageSize
+      }
+    )
+      .then(res => {
+        let data, ch, en;
+
+        const newRes = (res as any).obj.list;
+
+        [this.resultsLength, this.totalRecord, this.currentPage.nativeElement.value, this.totalPage, data, ch, en] = [
+          newRes.results.length,
+          newRes.totalRecord,
+          newRes.pageNum,
+          newRes.totalPage,
+          newRes,
+          (this.config as any).chnames,
+          (this.config as any).ennames];
+
+        // tslint:disable-next-line:max-line-length
+        // tslint:disable-next-line:triple-equals
+        [this.currentStartIndex, this.resultsLength] = this.tbs.changePageIndex(data.pageNum, data.totalPage, data.results == undefined ? 0 : data.results.length, data.totalRecord);
+
+        this.cfs.createGrid(data, ch, en, this.config);
+      })
+  }
 
 }
