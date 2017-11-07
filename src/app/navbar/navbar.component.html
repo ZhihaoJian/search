@@ -8,7 +8,7 @@
           <span style="margin-left:1rem">查询终端</span>
         </span>
       </a>
-
+      <!-- 横屏 -->
       <div #linkContainer id="link-container">
 
         <a [routerLink]="['/openFile']" data-index='0' class="item" [ngClass]="{active:openFile.dataset['index']===linkIndex }" (click)="onChangeForcus(openFile.dataset['index'])"
@@ -47,6 +47,47 @@
           <span>在线评价</span>
         </a>
       </div>
+    </div>
+  </div>
+
+  <!-- 竖屏 -->
+  <div #linkContainer id="roate-container">
+    <div>
+      <a [routerLink]="['/openFile']" data-index='0' class="item" [ngClass]="{active:openFile.dataset['index']===linkIndex }" (click)="onChangeForcus(openFile.dataset['index'])"
+        #openFile>
+        <img *ngIf="openFile.dataset['index']!==linkIndex;else openFileChecked" src="../../assets/newnewnewTeminal/openFile.png"
+          alt="" srcset="">
+        <ng-template #openFileChecked>
+          <img src="../../assets/newnewnewTeminal/openFileChecked.png" alt="" srcset="">
+        </ng-template>
+        <span>开放档案服务</span>
+      </a>
+
+      <a [routerLink]="['/currentFile']" data-index='1' class="item" [ngClass]="{active:currentFile.dataset['index']===linkIndex}"
+        (click)="onChangeForcus(currentFile.dataset['index'])" #currentFile>
+        <img *ngIf="currentFile.dataset['index']!==linkIndex;else currentFileChecked" src="../../assets/newnewnewTeminal/currentFile.png"
+          alt="" srcset="">
+        <ng-template #currentFileChecked>
+          <img src="../../assets/newnewnewTeminal/currentFileChecked.png" alt="" srcset="">
+        </ng-template>
+        <span>现行文件服务</span>
+      </a>
+
+      <a [routerLink]="['/archivecompilationservice']" data-index='2' [ngClass]="{active:archiveService.dataset['index']===linkIndex }"
+        class="item" (click)="onChangeForcus(archiveService.dataset['index'])" #archiveService>
+        <img *ngIf="archiveService.dataset['index']!==linkIndex ;else archiveServiceChecked" src="../../assets/newnewnewTeminal/archiveService.png"
+          alt="" srcset="">
+        <ng-template #archiveServiceChecked>
+          <img src="../../assets/newnewnewTeminal/archiveServiceChecked.png" alt="" srcset="">
+        </ng-template>
+        <span>档案编研</span>
+      </a>
+
+      <a class="item" id="ratingBtn" #ratingBtn data-index='3' [ngClass]="{active:onlineComment.dataset['index']===linkIndex }"
+        (click)="onShowRatingModal()" #onlineComment>
+        <img src="../../assets/newnewnewTeminal/onlineComment.png" alt="" srcset="">
+        <span>在线评价</span>
+      </a>
     </div>
   </div>
 </nav>

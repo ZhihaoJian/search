@@ -2,7 +2,7 @@
 
 #navbar {
     background: linear-gradient(45deg, rgba(25, 138, 255, 0), rgba(57, 121, 236, 0));
-    height: 170px;
+    height: 10.625em;
     border: none;
     box-shadow: 0 0 0;
 }
@@ -24,13 +24,17 @@
     margin-left: auto;
 }
 
+
+/* 横屏状态 */
+
 #link-container a {
     display: flex;
     flex-direction: column;
+    margin: auto 0;
 }
 
 #link-container a img {
-    width: 120px;
+    width: 8em;
 }
 
 #link-container a span {
@@ -40,48 +44,104 @@
     font-weight: bold;
 }
 
+
+/* 竖屏状态 */
+
+#roate-container {
+    display: none;
+    margin-bottom: 1rem;
+    height: 100px;
+}
+
+#roate-container>div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#roate-container>div a {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+}
+
+#roate-container>div a img {
+    width: 50px;
+    margin: 0 auto;
+}
+
+#roate-container>div a span {
+    margin-top: 5px;
+    font-size: 16px;
+    text-shadow: 5px 5px 5px #222222;
+    font-weight: bold;
+    color: #fff;
+}
+
 .logo-image {
-    width: 100px !important;
+    width: 6em !important;
 }
 
-@media (max-height:768px) {
+.ui.menu .item:before {
+    width: 0;
+}
+
+.ui.menu .item {
+    position: relative;
+    vertical-align: middle;
+    line-height: 1;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background: 0 0;
+    padding: .92857143em 0.7em;
+    padding-top: 0.928571em;
+    padding-right: 0.7em;
+    padding-bottom: 0.928571em;
+    padding-left: 0.7em;
+    text-transform: none;
+    color: rgba(0, 0, 0, .87);
+    font-weight: 400;
+    transition: background .1s ease, box-shadow .1s ease, color .1s ease;
+}
+
+/* 水平放置且高度最大800px*/
+
+@media (max-height:800px) {
     #navbar {
         background: linear-gradient(45deg, rgba(25, 138, 255, 0), rgba(57, 121, 236, 0));
-        height: 100px;
+        height: 8em;
         border: none;
         box-shadow: 0 0 0;
     }
     #logo-name {
-        font-size: 1.2rem;
+        font-size: 1.6rem;
         margin-left: 5px;
         color: #fff;
         text-shadow: 5px 5px 5px #565656;
     }
     #link-container a img {
-        width: 50px;
+        width: 5.125em;
     }
     .logo-image {
-        width: 50px !important;
+        width: 5.125em !important;
     }
 }
 
-@media screen and (max-width:1400px) {
-    #navbar {
-        background: linear-gradient(45deg, rgba(25, 138, 255, 0), rgba(57, 121, 236, 0));
-        height: 100px;
-        border: none;
-        box-shadow: 0 0 0;
+
+/* 纵向 */
+
+@media screen and (orientation:portrait) {
+    #link-container {
+        display: none !important;
     }
-    #logo-name {
-        font-size: 1.2rem;
-        margin-left: 5px;
-        color: #fff;
-        text-shadow: 5px 5px 5px #565656;
-    }
-    #link-container a img {
-        width: 50px;
-    }
-    .logo-image {
-        width: 50px !important;
+    #roate-container {
+        display: block;
     }
 }

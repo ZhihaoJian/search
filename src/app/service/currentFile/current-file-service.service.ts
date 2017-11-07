@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams, HttpHeaders } from '@angular/common/http';
 
 
 declare var $: any;
@@ -7,7 +7,7 @@ declare var $: any;
 @Injectable()
 export class CurrentFileServiceService {
 
-  private IP = 'http://192.168.88.2:7777';
+  private IP = 'http://192.168.88.110:7070';
 
   constructor(private http: HttpClient) {
   }
@@ -29,7 +29,8 @@ export class CurrentFileServiceService {
     // 查询开放档案的下拉框
     return new Promise((resolve, reject) => {
       this.http.post(url, null, {
-        params: requestParams
+        params: requestParams,
+        // headers: new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8')
       })
         .subscribe(metaData => {
 
@@ -127,7 +128,8 @@ export class CurrentFileServiceService {
           .set('tableHeaders', tableNameEns.toString())
           .set('pageNum', pageNum.toString())
           .set('pageSize', pageSize.toString())
-          .set('keyWord', keyword)
+          .set('keyWord', keyword),
+        // headers: new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8')
       })
         .subscribe(data => {
           tableNameArray['data'] = data;
@@ -147,7 +149,8 @@ export class CurrentFileServiceService {
     return new Promise((resolve, reject) => {
       this.http.post(requestUrl, null, {
         params: new HttpParams()
-          .set('tableName', tableName)
+          .set('tableName', tableName),
+        // headers: new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8')
       }).subscribe(metaData => {
         resolve(metaData);
       }, err => {
@@ -315,14 +318,14 @@ export class CurrentFileServiceService {
   private enableLoading() {
     const loading = document.getElementById('segment');
     loading.style.display = 'block';
-    $('html,body').css('overflow-y', 'hidden')
+    // $('html,body').css('overflow-y', 'hidden')
   }
 
   // 禁用遮罩
   private disableLoading() {
     const loading = document.getElementById('segment');
     loading.style.display = 'none';
-    $('html,body').css('overflow-y', 'auto')
+    // $('html,body').css('overflow-y', 'hidden')
   }
 
 
