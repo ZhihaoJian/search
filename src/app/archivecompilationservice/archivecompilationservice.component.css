@@ -7,7 +7,15 @@
     margin-top: 1rem;
 }
 
+#check-file-modal div.scrolling {
+    overflow-x: hidden !important;
+}
+
 #search-form {
     display: inline-block;
     width: 100%;
+}
+
+#edui1 {
+    width: 100% !important;
 }

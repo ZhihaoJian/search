@@ -169,6 +169,8 @@ export class ArchivecompilationserviceComponent implements OnInit {
       // 延迟500ms后才对Ueditor插入内容,小于250ms则会初始渲染内容失败
       setTimeout(function () {
         that.ue.setContent(response.compContent);
+        // 将Ueditor的宽度修正为相对于父元素的100%
+        document.getElementById('edui1').style.width = '100%';
       }, 500);
 
 

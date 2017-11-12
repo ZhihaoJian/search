@@ -260,7 +260,7 @@ export class CurrentFileServiceService {
     }
 
     if (window.innerHeight <= 768) {
-      height = $('html').height() - 250;
+      height = $('html').height() - 260;
     }
 
 
