@@ -1,13 +1,15 @@
 <!--开放档案服务 start-->
 <section>
-    <div class="ui container" id="content-container">
+    <div class="ui container sixteen wide custom-container-width" id="content-container">
         <div id="openFileService">
             <!--表单 start-->
-            <app-form [selection]="selection" (pagerInfo)="onGetPagerInfo($event)" ></app-form>
-            
+            <app-form [selection]="selection" (errorMsg)="onGetErrorMsg($event)" (pagerInfo)="onGetPagerInfo($event)"></app-form>
+
             <!--表单 end-->
 
             <app-table [gridContentArray]="gridContentArray" [pagerInfo]="pagerInfo"></app-table>
+            <app-error-modal [errorMsg]="errorMsg"></app-error-modal>
+
         </div>
     </div>
 </section>

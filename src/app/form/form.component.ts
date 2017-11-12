@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { CurrentFileServiceService } from '../service/currentFile/current-file-service.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 declare var $: any;
 
 @Component({
@@ -11,8 +11,9 @@ declare var $: any;
 })
 export class FormComponent implements OnInit, AfterViewInit {
 
+  @Output() errorMsg = new EventEmitter();
   form: FormGroup;
-  public options;
+  options;
 
   @Input()
   set selection(selection: any) {
@@ -36,7 +37,7 @@ export class FormComponent implements OnInit, AfterViewInit {
 
 
 
-  constructor(public fb: FormBuilder, public ar: ActivatedRoute, public cfs: CurrentFileServiceService) { }
+  constructor(public fb: FormBuilder, public ar: ActivatedRoute, public cfs: CurrentFileServiceService, public router: Router) { }
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -53,10 +54,11 @@ export class FormComponent implements OnInit, AfterViewInit {
   onSubmit(value: any) {
     console.log(value);
 
+
     let tableName, cataId;
     [tableName, cataId] = this.cfs.resolveParams(value.tableNameAndCataId);
 
-    if (location.pathname === '/openFile') {
+    if (location.hash === '#/openFile') {
 
       this.cfs.updateGrid('/terminal/openArchivesController/loadDataForTableHeader',
         tableName, cataId,
@@ -69,7 +71,7 @@ export class FormComponent implements OnInit, AfterViewInit {
         })
 
 
-    } else if (location.pathname === '/currentFile') {
+    } else if (location.hash === '#/currentFile') {
       this.cfs.updateGrid('/terminal/currentFileController/loadDataForTableHeader',
         tableName, cataId,
         1,
@@ -78,14 +80,13 @@ export class FormComponent implements OnInit, AfterViewInit {
         .then(res => {
           this.pagerInfo.emit(res);
         })
-    } else {
-
     }
   }
 
   onChange(selection: any) {
 
     const params = selection.options[selection.options.selectedIndex].id;
+    const classifyName = selection.options[selection.options['selectedIndex']].innerText; // 门类名称
     let tableName, cataId;
     [tableName, cataId] = this.cfs.resolveParams(params);
 
@@ -94,6 +95,11 @@ export class FormComponent implements OnInit, AfterViewInit {
     this.cfs.updateGrid('/terminal/openArchivesController/loadDataForTableHeader', tableName, cataId, '1', '10')
       .then(res => {
         [resultsLength, totalRecord, currentPage, totalPage, data, ch, en] = (res as any);
+
+        if (ch.length === 0 && en.length === 0) {
+          this.errorMsg.emit(`该门类 [ ${classifyName} ] 结构未正确设置，请联系管理员`);
+        }
+
         this.pagerInfo.emit([resultsLength, totalRecord, currentPage, totalPage]);
         this.cfs.createGrid(data, ch, en)
       })

@@ -73,4 +73,71 @@ export class TableService {
     }
     return boxChecked;
   }
+
+  /**
+   * 档案编研 自定义model
+   * @param ennames 英文表头
+   */
+  public getArchiveCompilationCustomModel(ennames: Array<string>) {
+    const model = [];
+
+    ennames.forEach((element) => {
+      if (element === '') {
+        model.push({
+          width: 33,
+          align: 'center',
+          formatter: (cellvalue, options, rowObject) => {
+            const archiveCompilationId = rowObject.archiveCompilationId;
+            const currentTaskId = rowObject.currentTaskId;
+            const processId = rowObject.processId;
+
+            return `<input type="checkbox" id="${archiveCompilationId + ',' + currentTaskId + ',' + processId}" >`;
+          }
+        })
+      } else if (element === 'compContent') {
+        model.push({
+          name: element,
+          index: element,
+          align: 'center',
+          formatter: function (cellvalue, options, rowObj) {
+            return cellvalue.replace(/<\/?[^>]+>/gi, '');
+          }
+        })
+      } else if (element === 'shenheStatu') {
+        model.push({
+          name: element,
+          align: 'center',
+          index: element,
+          formatter: function (cellvalue, options, roObj) {
+            switch (cellvalue) {
+              case 'ALLOW': return '允许调阅';
+              case 'NEVERAUDIT': return '未审核';
+              case 'REJECT': return '驳回';
+              case 'INAUDIT': return '审核中';
+              case 'NOTALLOW': return '不允许调阅';
+              case 'AGREE': return '同意';
+            }
+          }
+        })
+      } else {
+        model.push({
+          name: element,
+          index: element,
+          align: 'center',
+          sortable: true
+        })
+      }
+    });
+
+    return model;
+  }
+
+  /**
+   * 获取自定义checkbox的id
+   * @param checkbox 自定义checkbox
+   */
+  getCustomCheckboxId(checkbox: HTMLInputElement) {
+    return checkbox.id.split(',');
+  }
+
 }

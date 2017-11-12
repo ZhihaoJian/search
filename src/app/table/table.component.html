@@ -1,5 +1,5 @@
 <div id="gridContainer">
-    <table class="ui celled table" id="jqGrid">
+    <table id="jqGrid">
 
     </table>
 
@@ -22,8 +22,9 @@
 
                 <span>
                     第
-                    <input type="text" value="1" #currentPage id="currentPage"> 页 共
-                    <span style="margin-left:1rem" id="totalPage"> {{totalPage}} </span>页
+                    <input type="text" value="1" #currentPage id="currentPage"> 页
+                    <span>共
+                        <span id="totalPage"> {{totalPage}} </span>页</span>
                 </span>
 
                 <span class="sperator"></span>
@@ -34,21 +35,23 @@
                 <span class="border-circle" id="last-page" #lastPage (click)="onChangePage(lastPage.id)">
                     <i class="fa fa-angle-double-right" aria-hidden="true"></i>
                 </span>
-                <select name="" #pageSize (change)="onChangePageSize(pageSize)">
+                <select name="pageSize" #pageSize (change)="onChangePageSize(pageSize)">
                     <option value="10">10</option>
                     <option value="20">20</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                    <option value="500">500</option>
                 </select>
             </div>
         </div>
-        <div class="viewRecords">
+        <div class="viewRecords" *ngIf="resultsLength !==0;else noData">
             第{{currentStartIndex}}到
             <span id="resultsLength"> {{resultsLength}}</span>条
             <span style="margin-left:1rem;">共
                 <span id="totalRecord">{{totalRecord}}</span>条
             </span>
         </div>
+        <ng-template #noData>
+            <div class="viewRecords">
+                没有记录
+            </div>
+        </ng-template>
     </div>
 </div>

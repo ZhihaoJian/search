@@ -1,4 +1,5 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Router, RoutesRecognized } from '@angular/router';
 declare var $: any;
 
 @Component({
@@ -10,15 +11,16 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   public linkIndex = '0';
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
-    const href = location.pathname;
-    if (href === '/openFile') {
+
+    const hash = location.hash;
+    if (hash === '#/openFile') {
       this.linkIndex = '0'
-    } else if (href === '/currentFile') {
+    } else if (hash === '#/currentFile') {
       this.linkIndex = '1'
-    } else {
+    } else if (hash === '#/archivecompilationservice') {
       this.linkIndex = '2'
     }
   }

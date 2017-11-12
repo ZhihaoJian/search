@@ -13,6 +13,12 @@ export class OpenFileReceiveComponent implements OnInit {
 
   @Output() selection: any;
   @Output() gridContentArray;
+
+  // 辅助计数。
+  // 因为子组件 @Input 的 setter 属性只有监听到输入值发生变化才执行事件，因此使用辅助计数欺瞒 @Input 的setter属性值检测
+  count = 0;
+
+  errorMsg: object;
   pagerInfo;
   chnames: Array<string>;
   ennames: Array<string>;
@@ -55,7 +61,7 @@ export class OpenFileReceiveComponent implements OnInit {
         this.gridContentArray = {};
         this.gridContentArray['chnames'] = (res as any).ch;
         this.gridContentArray['ennames'] = (res as any).en;
-        this.gridContentArray['data'] = (res as any).data.obj.list;
+        this.gridContentArray['data'] = (res as any).data.obj.list
       })
   }
 
@@ -71,5 +77,10 @@ export class OpenFileReceiveComponent implements OnInit {
    */
   private sperateData(data: any) {
     this.selection = data.obj;
+  }
+
+  onGetErrorMsg(errorMsg: string) {
+    console.log(errorMsg);
+    this.errorMsg = { errorMsg: errorMsg, count: this.count++ };
   }
 }

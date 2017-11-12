@@ -1,5 +1,6 @@
 #gridContainer {
     border: 1px solid #d6d6d6;
+    background: #fefefe;
 }
 
 #newPager {
@@ -42,6 +43,27 @@
     color: #ccc;
     margin-left: 1rem;
     margin-right: 1rem;
+}
+
+#currentPage+span {
+    margin-left: 1rem;
+}
+
+@media screen and (max-width:1200px) {
+    .sperator::after {
+        content: "|";
+        width: 1px;
+        font-size: 1rem;
+        color: #ccc;
+        margin-left: .1rem;
+        margin-right: .1rem;
+    }
+    .border-circle {
+        margin-right: .5rem;
+    }
+    #currentPage+span {
+        margin: .1rem;
+    }
 }
 
 input {

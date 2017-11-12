@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams, HttpHeaders } from '@angular/common/http';
 
 
 declare var $: any;
@@ -7,7 +7,7 @@ declare var $: any;
 @Injectable()
 export class CurrentFileServiceService {
 
-  private IP = 'http://192.168.88.2:7070';
+  private IP = 'http://192.168.88.110:7070';
 
   constructor(private http: HttpClient) {
   }
@@ -24,13 +24,13 @@ export class CurrentFileServiceService {
       }
     }
 
+    this.enableLoading();
 
     // 查询开放档案的下拉框
     return new Promise((resolve, reject) => {
       this.http.post(url, null, {
-        params: requestParams
-        // params: new HttpParams()
-        //   .set('classifyType', 'FILINGFILE,FILECOMPILING,VOLUMES,ARCHIVES')
+        params: requestParams,
+        // headers: new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8')
       })
         .subscribe(metaData => {
 
@@ -58,7 +58,14 @@ export class CurrentFileServiceService {
    * @param tableName 表名（英文）
    * @param catalogueId 请求ID
    */
-  public getFirstSelectionGrid(url: string, tableName: string, catalogueId: string, pageNum?: number, pageSize?: number, keyword?: string) {
+  public getFirstSelectionGrid(
+    url: string,
+    tableName: string,
+    catalogueId: string,
+    pageNum?: number,
+    pageSize?: number,
+    keyword?: string,
+    dbName?: string) {
 
     this.enableLoading();
     const tableNameArray = {};
@@ -73,7 +80,7 @@ export class CurrentFileServiceService {
           return tableNameArray;
         })
         .then(res => {
-          this.getDataFromDb(tableName, url, catalogueId, tableNameArray, (res as any).en, pageNum, pageSize, keyword)
+          this.getDataFromDb(tableName, url, catalogueId, tableNameArray, (res as any).en, pageNum, pageSize, keyword, dbName)
             .then(response => {
               console.log(response)
               resolve(response);
@@ -95,9 +102,10 @@ export class CurrentFileServiceService {
     tableNameEns: Array<string>,
     pageNum?: number,
     pageSize?: number,
-    keyword?: string) {
+    keyword?: string,
+    dataBaseName?: string) {
 
-    const dbName = 'eddc_open.';
+    const dbName = dataBaseName ? dataBaseName : 'eddc_open.';
     const requestUrl = this.IP + url;
 
     if (!pageNum) {
@@ -120,7 +128,8 @@ export class CurrentFileServiceService {
           .set('tableHeaders', tableNameEns.toString())
           .set('pageNum', pageNum.toString())
           .set('pageSize', pageSize.toString())
-          .set('keyWord', keyword)
+          .set('keyWord', keyword),
+        // headers: new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8')
       })
         .subscribe(data => {
           tableNameArray['data'] = data;
@@ -140,7 +149,8 @@ export class CurrentFileServiceService {
     return new Promise((resolve, reject) => {
       this.http.post(requestUrl, null, {
         params: new HttpParams()
-          .set('tableName', tableName)
+          .set('tableName', tableName),
+        // headers: new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8')
       }).subscribe(metaData => {
         resolve(metaData);
       }, err => {
@@ -171,6 +181,8 @@ export class CurrentFileServiceService {
 
 
   /**
+   * 若config对象中有自定义的colModel，则覆盖默认的colModel
+   *
    * 生成表格
    * @param data 元数据
    */
@@ -178,8 +190,12 @@ export class CurrentFileServiceService {
 
     if (data) {
       // const headers = this.generateTableHeaders(data);
-      const colModel = this.generateColModel(enNames);
-      this.generateGrid(data, colModel, chNames, config);
+      if (config && config.hasOwnProperty('colModel')) {
+        this.generateGrid(data, [], chNames, config);
+      } else {
+        const colModel = this.generateColModel(enNames);
+        this.generateGrid(data, colModel, chNames, config);
+      }
     }
   }
 
@@ -225,18 +241,38 @@ export class CurrentFileServiceService {
    * @param data 服务器回传数据
    * @param colModal 列配置
    * @param header 中文表头
-   * @param config 自定义配置项
+   * @param config 可选自定义配置项
    */
   private generateGrid(data: any, colModel: any, header: Array<string>, config?: object) {
-    $('#jqGrid').jqGrid({
+
+    let gridID = '#jqGrid';
+    let height = 500;
+
+    if (config && config.hasOwnProperty('gridID')) {
+      gridID = config['gridID'];
+      $.jgrid.gridUnload(gridID);
+
+      if (gridID[0] !== '#') {
+        gridID = '#' + gridID;
+      }
+    } else {
+      $.jgrid.gridUnload('jqGrid');
+    }
+
+    if (window.innerHeight <= 768) {
+      height = $('html').height() - 260;
+    }
+
+
+    $(gridID).jqGrid({
       datatype: 'local',
-      colModel: colModel,
+      colModel: !!config && config.hasOwnProperty('colModel') ? config['colModel'] : colModel,
       localReader: {
         root: () => {
           return data.results || [];
         },
         id: () => {
-          if (config && config.hasOwnProperty('id')) {
+          if (config && !config.hasOwnProperty('colModel') && config.hasOwnProperty('id')) {
             return config['id'];
           }
           return 'f_id';
@@ -244,17 +280,18 @@ export class CurrentFileServiceService {
       },
       colNames: header,
       mtype: 'POST',
-      multiselect: true,
-      responsive: true,
-      rowNum: 20,
-      rowList: [10, 20, 30],
+      pager: config && config['pager'] ? config['pager'] : '',
+      multiselect: !!config && config.hasOwnProperty('multiselect') ? config['multiselect'] : true,
+      // responsive: true,
+      // rowNum: 20,
+      // rowList: [10, 20, 30],
       scroll: true,
-      height: 550,
+      height: !!config && config.hasOwnProperty('height') ? config['height'] : height,
       styleUI: 'jQueryUI',
       rowTotal: data.total,
       viewrecords: true,
       cellLayout: 15,
-      scrollPopUp: true,
+      // scrollPopUp: true,
       pgbuttons: true,
       prmNames: {
         page: 'pageNum',
@@ -281,14 +318,14 @@ export class CurrentFileServiceService {
   private enableLoading() {
     const loading = document.getElementById('segment');
     loading.style.display = 'block';
-    $('html,body').css('overflow-y', 'hidden')
+    // $('html,body').css('overflow-y', 'hidden')
   }
 
   // 禁用遮罩
   private disableLoading() {
     const loading = document.getElementById('segment');
     loading.style.display = 'none';
-    $('html,body').css('overflow-y', 'auto')
+    // $('html,body').css('overflow-y', 'hidden')
   }
 
 
@@ -330,9 +367,11 @@ export class CurrentFileServiceService {
    * @param pageNum 第几页
    * @param pageSize 每页请求大小
    */
-  public updateGrid(url: string, tableName: string, cataId: string, pageNum: any, pageSize: any, keyWord?: string) {
+  public updateGrid(url: string, tableName: string, cataId: string, pageNum: any, pageSize: any, keyWord?: string, dataBaseName?: string) {
 
     let resultsLength, totalRecord, currentPage, totalPage;
+    this.enableLoading();
+
 
     return new Promise((resolve, reject) => {
       this.getFirstSelectionGrid(
@@ -344,9 +383,22 @@ export class CurrentFileServiceService {
         keyWord).then(res => {
           $.jgrid.gridUnload('jqGrid');
 
-          const data = (res as any).data.obj.list;
-          const ch = (res as any).ch;
-          const en = (res as any).en;
+          const response = (res as any);
+
+          if (response.data.obj == null) {
+
+            resultsLength = 0;
+            totalRecord = 0;
+            currentPage = 0;
+            totalPage = 0;
+            resolve([resultsLength, totalRecord, currentPage, totalPage, {}, [], []]);
+
+            return
+          }
+
+          const data = response.data.obj == null ? [] : (res as any).data.obj.list;
+          const ch = response.ch;
+          const en = response.en;
 
           // tslint:disable-next-line:triple-equals
           resultsLength = data.results == undefined ? 0 : data.results.length;
@@ -354,6 +406,7 @@ export class CurrentFileServiceService {
           currentPage = data.pageNum;
           totalPage = data.totalPage;
 
+          this.disableLoading();
           resolve([resultsLength, totalRecord, currentPage, totalPage, data, ch, en]);
 
         })
