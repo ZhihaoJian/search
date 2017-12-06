@@ -20,6 +20,7 @@ export class FormComponent implements OnInit, AfterViewInit {
   options;
   @Input() dianziwenjianEn; // 电子文件字段值
   @Input() tableName; // 表名
+  EDCBtnShow = true; // 是否查看电子文件
 
   @Input()
   set selection(selection: any) {
@@ -54,7 +55,14 @@ export class FormComponent implements OnInit, AfterViewInit {
     this.form = this.fb.group({
       tableNameAndCataId: [''],
       keyword: ['']
-    })
+    });
+
+    const hash = window.location.hash;
+    if (hash === '#/currentFile') {
+      this.EDCBtnShow = true;
+    } else {
+      this.EDCBtnShow = false;
+    }
   }
 
   ngAfterViewInit(): void {
