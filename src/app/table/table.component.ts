@@ -18,6 +18,7 @@ export class TableComponent implements OnInit, AfterViewInit {
   public currentStartIndex = 1;
   public previousPageSize = 10;
   public config: object;
+  public dianziwenjianEn = ''; // 电子文件字段值
   @ViewChild('currentPage') currentPage: ElementRef;
   @ViewChild('pageSize') pageSize: ElementRef;
 
@@ -39,6 +40,7 @@ export class TableComponent implements OnInit, AfterViewInit {
       this.readyCreateGrid(gca);
 
       const newGCA = (gca as any);
+      this.dianziwenjianEn = newGCA.dianziwenjianEn;
 
       // 添加组件的配置项
       if (newGCA.hasOwnProperty('config')) {

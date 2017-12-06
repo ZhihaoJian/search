@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams, HttpHeaders } from '@angular/common/http';
+import { IP, generateRequestParam } from '../../share/share';
 
 
 declare var $: any;
@@ -7,22 +8,22 @@ declare var $: any;
 @Injectable()
 export class CurrentFileServiceService {
 
-  private IP = 'http://192.168.88.110:7070';
 
   constructor(private http: HttpClient) {
   }
 
   // 初始化加载，默认加载 开放档案服务的数据
   public initLoading(requestUrl: string, params: object) {
-    const url = this.IP + requestUrl;
+    const url = IP + requestUrl;
     let requestParams = new HttpParams();
 
     // 根据传入的参数构造动态请求参数列表
-    for (const param in params) {
-      if (params.hasOwnProperty(param)) {
-        requestParams = requestParams.set(param.toString(), params[param]);
-      }
-    }
+    // for (const param in params) {
+    //   if (params.hasOwnProperty(param)) {
+    //     requestParams = requestParams.set(param.toString(), params[param]);
+    //   }
+    // }
+    requestParams = generateRequestParam(params);
 
     this.enableLoading();
 
@@ -74,8 +75,10 @@ export class CurrentFileServiceService {
       this.getTableHeader(tableName)
         .then(res => {
           if (res) {
-            tableNameArray['ch'] = (res.obj.tableNameChs);
-            tableNameArray['en'] = (res.obj.tableNameEns);
+            const data = res.obj;
+            tableNameArray['ch'] = (data.tableNameChs);
+            tableNameArray['en'] = (data.tableNameEns);
+            tableNameArray['dianziwenjianEn'] = (data.dianziwenjianEn);
           }
           return tableNameArray;
         })
@@ -106,7 +109,7 @@ export class CurrentFileServiceService {
     dataBaseName?: string) {
 
     const dbName = dataBaseName ? dataBaseName : 'eddc_open.';
-    const requestUrl = this.IP + url;
+    const requestUrl = IP + url;
 
     if (!pageNum) {
       pageNum = 1;
@@ -144,7 +147,7 @@ export class CurrentFileServiceService {
    * @param tableName 表头名
    */
   private getTableHeader(tableName: string): Promise<any> {
-    const requestUrl = this.IP + '/terminal/openArchivesController/getTableHeader';
+    const requestUrl = IP + '/terminal/openArchivesController/getTableHeader';
 
     return new Promise((resolve, reject) => {
       this.http.post(requestUrl, null, {
@@ -247,6 +250,7 @@ export class CurrentFileServiceService {
 
     let gridID = '#jqGrid';
     let height = 500;
+    let lastSel = '';
 
     if (config && config.hasOwnProperty('gridID')) {
       gridID = config['gridID'];
@@ -265,6 +269,11 @@ export class CurrentFileServiceService {
 
 
     $(gridID).jqGrid({
+      onSelectRow: function (id, orgEvent, obj) {
+        if (orgEvent) {
+          lastSel = id;
+        }
+      },
       datatype: 'local',
       colModel: !!config && config.hasOwnProperty('colModel') ? config['colModel'] : colModel,
       localReader: {
@@ -282,6 +291,7 @@ export class CurrentFileServiceService {
       mtype: 'POST',
       pager: config && config['pager'] ? config['pager'] : '',
       multiselect: !!config && config.hasOwnProperty('multiselect') ? config['multiselect'] : true,
+      multiboxonly: true,
       // responsive: true,
       // rowNum: 20,
       // rowList: [10, 20, 30],

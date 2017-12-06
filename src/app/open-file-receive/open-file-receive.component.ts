@@ -1,6 +1,7 @@
 import { Component, OnInit, HostBinding, Output, EventEmitter } from '@angular/core';
 import { slideInOutAnimation } from '../animation/animation';
 import { CurrentFileServiceService } from '../service/currentFile/current-file-service.service';
+declare var $: any;
 
 @Component({
   selector: 'app-open-file-receive',
@@ -14,6 +15,7 @@ export class OpenFileReceiveComponent implements OnInit {
   @Output() selection: any;
   @Output() gridContentArray;
 
+
   // 辅助计数。
   // 因为子组件 @Input 的 setter 属性只有监听到输入值发生变化才执行事件，因此使用辅助计数欺瞒 @Input 的setter属性值检测
   count = 0;
@@ -22,6 +24,8 @@ export class OpenFileReceiveComponent implements OnInit {
   pagerInfo;
   chnames: Array<string>;
   ennames: Array<string>;
+  dianziwenjianEn: string;  // 电子文件字段
+  tableName: string;  // 表名
   @HostBinding('@routeAnimation') routeAnimation = true;
   @HostBinding('style.display') display = 'block';
   @HostBinding('style.position') position = 'absolute'
@@ -34,6 +38,10 @@ export class OpenFileReceiveComponent implements OnInit {
 
   // 首次加载从服务器获取 开放档案服务的数据，期间用遮罩显示‘加载中...’，加载完毕去除遮罩
   private getSelectionValue() {
+    this.initLoading();
+  }
+
+  private initLoading() {
     this.cfs.initLoading(
       '/terminal/openArchivesController/getCatalogueTree',
       {
@@ -44,10 +52,10 @@ export class OpenFileReceiveComponent implements OnInit {
         return res;
       }).then(data => {
 
-        const tableName = (data as any).obj[0].other;
+         this.tableName = (data as any).obj[0].other;
         const id = (data as any).obj[0].id;
 
-        this.getFirstGridContent(tableName, id);
+        this.getFirstGridContent(this.tableName, id);
       })
   }
 
@@ -57,16 +65,17 @@ export class OpenFileReceiveComponent implements OnInit {
     this.cfs
       .getFirstSelectionGrid('/terminal/openArchivesController/loadDataForTableHeader', tableName, id)
       .then(res => {
-        console.log(res);
         this.gridContentArray = {};
-        this.gridContentArray['chnames'] = (res as any).ch;
-        this.gridContentArray['ennames'] = (res as any).en;
-        this.gridContentArray['data'] = (res as any).data.obj.list
+        const data = (res as any);
+        this.gridContentArray['chnames'] = data.ch;
+        this.gridContentArray['ennames'] = data.en;
+        this.gridContentArray['data'] = data.data.obj.list;
+        this.gridContentArray['dianziwenjianEn'] = data.dianziwenjianEn;
+        this.dianziwenjianEn = data.dianziwenjianEn;
       })
   }
 
   onGetPagerInfo(info: any) {
-    console.log(info);
     this.pagerInfo = info;
   }
 
@@ -80,7 +89,6 @@ export class OpenFileReceiveComponent implements OnInit {
   }
 
   onGetErrorMsg(errorMsg: string) {
-    console.log(errorMsg);
     this.errorMsg = { errorMsg: errorMsg, count: this.count++ };
   }
 }

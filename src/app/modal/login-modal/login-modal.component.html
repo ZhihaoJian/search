@@ -1,0 +1,69 @@
+<div class="ui modal" id="login-modal">
+  <div class="header">请填写您的个人信息</div>
+  <div class=" content">
+    <form [formGroup]="loginForm" novalidate>
+      <div class="ui form">
+        <div class="two fields">
+          <div class="field required" [class.error]="(loginForm.controls.username.dirty || loginForm.controls.username.touched) && loginForm.controls.username.invalid ">
+            <label class="" for="username">姓名</label>
+            <input type="text" id="username" formControlName="username">
+          </div>
+          <div class="field required">
+            <label class="">性别</label>
+            <select class="ui dropdown" formControlName="sex">
+              <option value="">性别</option>
+              <option value="男">男</option>
+              <option value="女">女</option>
+            </select>
+          </div>
+        </div>
+        <div class="two fields">
+          <div class="field required" [class.error]="(loginForm.controls.telephone.dirty || loginForm.controls.telephone.touched) && loginForm.controls.telephone.invalid ">
+            <label class="" for="telephone">联系方式</label>
+            <input type="tel" id="telephone" formControlName="telephone">
+          </div>
+          <div class="field ">
+            <label for="email">邮箱</label>
+            <input type="email" id="email" formControlName="email">
+          </div>
+        </div>
+        <div class="two fields">
+          <div class="field required" [class.error]="(loginForm.controls.nameOfIDCard.dirty || loginForm.controls.nameOfIDCard.touched) && loginForm.controls.nameOfIDCard.invalid ">
+            <label class="" for="">证件类型</label>
+            <select class="ui dropdown" formControlName="nameOfIDCard" (change)="onChangeSelection($event.target.value)">
+              <option *ngFor="let credential of nameOfIDCard;let i = index" [attr.selected]="i===0?selected:false" value="{{i}}">{{credential}}</option>
+            </select>
+          </div>
+          <div class="field required" [class.disabled]="isUnTouched" [class.error]="(loginForm.controls.numberOfIDCard.dirty || loginForm.controls.numberOfIDCard.touched) && loginForm.controls.numberOfIDCard.invalid">
+            <label class="" for="numberOfIDCard">证件号码</label>
+            <input type="text" id="numberOfIDCard" formControlName="numberOfIDCard">
+          </div>
+        </div>
+        <div class="two fields">
+          <div class="field ">
+            <label for="company">单位</label>
+            <input type="text" id="company" formControlName="company">
+          </div>
+          <div class="field ">
+            <label for="">查档类型</label>
+            <input type="text" readonly placeholder="普通查档">
+          </div>
+        </div>
+
+        <div class="field ">
+          <label for="purpose">查档目的</label>
+          <input type="text" id="purpose" formControlName="purpose">
+        </div>
+
+        <div class="field ">
+          <label for="ps">备注</label>
+          <textarea rows="5" cols="5" id="ps" formControlName="ps"></textarea>
+        </div>
+        <div class="actions">
+          <div class="ui button green confirm-btn" [class.ok]="loginForm.valid" (click)="onSubmit()">确定</div>
+        </div>
+      </div>
+    </form>
+
+  </div>
+</div>

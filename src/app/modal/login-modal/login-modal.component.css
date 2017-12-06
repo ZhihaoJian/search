@@ -1,0 +1,9 @@
+.confirm-btn {
+    float: right;
+}
+
+div.ui.form::after {
+    content: ".";
+    height: 1px;
+    visibility: hidden;
+}

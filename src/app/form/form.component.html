@@ -5,11 +5,14 @@
         <option *ngFor="let option of options;" value="catalogueId={{option.id}}&tableName={{option.other}}" data-id="catalogueId={{option.id}}&tableName={{option.other}}">{{option.name}}</option>
       </select>
     </div>
-    <div class="field eleven wide">
+    <div class="field nine wide">
       <input type="text" placeholder="输入查询信息" formControlName="keyword">
     </div>
     <div class="field two wide">
       <button class="ui button" type="submit">检索</button>
+    </div>
+    <div class="field two wide">
+      <button class="ui button" type="button" (click)="onCheckEDCFile()">查看电子文件</button>
     </div>
   </div>
 </form>

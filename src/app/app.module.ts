@@ -16,10 +16,12 @@ import { TableComponent } from './table/table.component';
 import { CoverComponent } from './cover/cover.component';
 import { CurrentFileServiceService } from './service/currentFile/current-file-service.service';
 import { ErrorModalComponent } from './modal/error-modal/error-modal.component';
+import { LoginModalComponent } from './modal/login-modal/login-modal.component';
 
 
 const routes: Routes = [
-  { path: '', redirectTo: '/openFile', pathMatch: 'full' },
+  { path: 'login', component: LoginModalComponent },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'openFile', component: OpenFileReceiveComponent },
   { path: 'currentFile', component: CurrentFileComponent },
   { path: 'archivecompilationservice', component: ArchivecompilationserviceComponent },
@@ -39,7 +41,8 @@ const routes: Routes = [
     FormComponent,
     TableComponent,
     CoverComponent,
-    ErrorModalComponent
+    ErrorModalComponent,
+    LoginModalComponent
   ],
   imports: [
     BrowserModule,

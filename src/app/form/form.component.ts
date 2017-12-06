@@ -2,18 +2,24 @@ import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, ViewChil
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { CurrentFileServiceService } from '../service/currentFile/current-file-service.service';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { TableService } from 'app/service/tableService/table.service';
 declare var $: any;
+
+import { IP } from '../share/share';
 
 @Component({
   selector: 'app-form',
   templateUrl: './form.component.html',
-  styleUrls: ['./form.component.css']
+  styleUrls: ['./form.component.css'],
+  providers: [TableService]
 })
 export class FormComponent implements OnInit, AfterViewInit {
 
   @Output() errorMsg = new EventEmitter();
   form: FormGroup;
   options;
+  @Input() dianziwenjianEn; // 电子文件字段值
+  @Input() tableName; // 表名
 
   @Input()
   set selection(selection: any) {
@@ -37,7 +43,12 @@ export class FormComponent implements OnInit, AfterViewInit {
 
 
 
-  constructor(public fb: FormBuilder, public ar: ActivatedRoute, public cfs: CurrentFileServiceService, public router: Router) { }
+  constructor(
+    public fb: FormBuilder,
+    public ar: ActivatedRoute,
+    public cfs: CurrentFileServiceService,
+    public router: Router,
+    private tbs: TableService) { }
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -105,4 +116,21 @@ export class FormComponent implements OnInit, AfterViewInit {
       })
   }
 
+  // 查看电子文件
+  onCheckEDCFile() {
+    const checkedBox = $('#jqGrid > tbody tr.jqgrow > td > input');
+    const hasCheckedBoxArray = this.tbs.getInputBoxChecked(checkedBox);
+
+
+    if (hasCheckedBoxArray.length === 0) {
+      alert('请勾选内容！');
+    } else if (hasCheckedBoxArray.length > 1) {
+      alert('只能选择一条目录查看！');
+    } else {
+      const inputId = hasCheckedBoxArray[0].id.substring(11);
+      const id = ($('#jqGrid').getRowData(inputId))[this.dianziwenjianEn];
+
+      window.open(`${IP}/static/plugins/filereader/filereader.html?tableName=${this.tableName}&filenames=${id}&index=0`);
+    }
+  }
 }
